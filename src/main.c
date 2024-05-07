@@ -125,8 +125,12 @@ int main() {
 			}
 			else if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 				switch (e.key.keysym.sym) {
-					case SDLK_ESCAPE: quit = 1; break;
-					case SDLK_p: pause = !pause; break;
+					case SDLK_ESCAPE:
+						quit = 1;
+						break;
+					case SDLK_p:
+						pause = !pause;
+						break;
 				}
 			}
 
