@@ -48,7 +48,7 @@ int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manag
 	// Set target framerate for framerate manager
 	refresh_rate = displayMode.refresh_rate;
 	if (SDL_setFramerate(fps_manager, refresh_rate) != 0) {
-		fprintf(stderr, "Failed to set target framerate for framerate manager: %s\n", SDL_GetError());
+		fprintf(stderr, "Failed to set target framerate for framerate manager\n");
 		return -1;
 	}
 
@@ -145,13 +145,19 @@ int main() {
 			}
 		}
 
-		// Clear screen with specified color
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
+		// Clear the screen with specified color
+		if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255) < 0) {
+			fprintf(stderr, "Failed to set the color for SDL_RenderClear: %s\n", SDL_GetError());
+		}
+		if (SDL_RenderClear(renderer) < 0) {
+			fprintf(stderr, "Failed to clear the screen: %s\n", SDL_GetError());
+		}
 
 		// Drawing 
 		for (size_t i = 0; i < CELL_NUMBER_TOTAL; ++i) {
-			boxColor(renderer, cells[i].x, cells[i].y, cells[i].x + CELL_SIZE, cells[i].y + CELL_SIZE, cells[i].alive ? 0xffffffff : 0x000000ff);
+			if (boxColor(renderer, cells[i].x, cells[i].y, cells[i].x + CELL_SIZE, cells[i].y + CELL_SIZE, cells[i].alive ? 0xffffffff : 0x000000ff) == -1) {
+				fprintf(stderr, "Failed to render cell No. %lu\n", i);
+			}
 		}
 
 		// Calculate FPS every second
