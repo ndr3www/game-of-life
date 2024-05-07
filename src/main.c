@@ -1,3 +1,4 @@
+#include <SDL2/SDL_stdinc.h>
 #include <stdio.h>
 #include <time.h>
 #include <SDL2/SDL.h>
@@ -159,7 +160,7 @@ int main() {
 			prevTime = currentTime;
 		}
 		else {
-			fps += 1000.0f / frameTime;
+			fps += 1000.0f / (frameTime == (Uint32)0 ? (Uint32)1 : frameTime);
 			++frameCount;
 		}
 
