@@ -1,12 +1,19 @@
 #include <stdio.h>
+#include <time.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL2_framerate.h>
 
-const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 800;
+const Sint16 CELL_SIZE = 8;
+const unsigned int CELL_NUMBER_WIDTH = 128;
+const unsigned int CELL_NUMBER_HEIGHT = 100;
+const size_t CELL_NUMBER_TOTAL = CELL_NUMBER_WIDTH * CELL_NUMBER_HEIGHT;
+
+const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
+const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT;
 int refresh_rate;
 
-signed char init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager) {
+int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager) {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		fprintf(stderr, "Failed to initialize SDL: %s\n", SDL_GetError());
@@ -51,6 +58,9 @@ signed char init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* f
 		return -1;
 	}
 
+	// Initialize RNG
+	srand(time(NULL));
+
 	return 0;
 }
 
@@ -61,15 +71,22 @@ void close_SDL(SDL_Window** window, SDL_Renderer** renderer) {
 	SDL_Quit();
 }
 
+typedef struct CellStruct {
+	Sint16 x, y;
+	int alive;
+} Cell;
+
 int main() {
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
 	FPSmanager fpsManager;
 
-	if (init_SDL(&window, &renderer, &fpsManager) != 0) { return 1; }
+	if (init_SDL(&window, &renderer, &fpsManager) != 0) {
+		return 1;
+	}
 
 	// Main loop flags
-	signed char quit = 0;
+	int quit = 0, pause = 1;
 
 	// Events handler
 	SDL_Event e;
@@ -78,17 +95,47 @@ int main() {
 	Uint64 prevTime = 0, currentTime;
 	Uint32 fps = 0;
 	Uint32 avgFPS = refresh_rate;
-	unsigned int frameCount = 0;
+	unsigned int frameCount = 1;
+
+	// Create cells
+	Cell* cells = malloc(sizeof(Cell) * CELL_NUMBER_TOTAL);
+	if (cells == NULL) {
+		fprintf(stderr, "Failed to allocate cells memory\n");
+		return 2;
+	}
+
+	// Initialize cells
+	size_t index = 0;
+	for (int y = 0; y < SCREEN_HEIGHT; y += CELL_SIZE) {
+		for (int x = 0; x < SCREEN_WIDTH; x += CELL_SIZE) {
+			cells[index].x = x;
+			cells[index].y = y;
+			cells[index++].alive = rand() % 2;
+		}
+	}
 
 	// Main loop
 	while (!quit) {
 		Uint32 frameTime = SDL_framerateDelay(&fpsManager);
 
 		while(SDL_PollEvent(&e) != 0) {
-			if (e.type == SDL_QUIT) { quit = 1; }
+			if (e.type == SDL_QUIT) {
+				quit = 1;
+			}
 			else if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 				switch (e.key.keysym.sym) {
 					case SDLK_ESCAPE: quit = 1; break;
+					case SDLK_p: pause = !pause; break;
+				}
+			}
+
+			// Change hovered cell state to alive when left mouse button has been clicked
+			int mouse_x, mouse_y;	
+			if (SDL_GetMouseState(&mouse_x, &mouse_y) == 1) {
+				for (size_t i = 0; i < CELL_NUMBER_TOTAL; ++i) {
+					if ((mouse_x >= cells[i].x && mouse_x <= cells[i].x + CELL_SIZE) && (mouse_y >= cells[i].y && mouse_y <= cells[i].y + CELL_SIZE)) {
+						cells[i].alive = 1;
+					}
 				}
 			}
 		}
@@ -97,11 +144,16 @@ int main() {
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
+		// Drawing 
+		for (size_t i = 0; i < CELL_NUMBER_TOTAL; ++i) {
+			boxColor(renderer, cells[i].x, cells[i].y, cells[i].x + CELL_SIZE, cells[i].y + CELL_SIZE, cells[i].alive ? 0xffffffff : 0x000000ff);
+		}
+
 		// Calculate FPS every second
 		currentTime = SDL_GetTicks64();
 		if (currentTime > prevTime + 1000) {
 			avgFPS = fps / frameCount;
-			frameCount = 0;
+			frameCount = 1;
 			fps = 0;
 
 			prevTime = currentTime;
@@ -115,6 +167,7 @@ int main() {
 	}
 
 	// Clean up
+	free(cells);
 	close_SDL(&window, &renderer);
 
 	return 0;
