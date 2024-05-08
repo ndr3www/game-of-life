@@ -86,20 +86,25 @@ int main() {
 	SDL_Event e;
 
 	// Stuff for calculating FPS at set interval
-	Uint64 prevTime = 0, currentTime;
+	Uint64 fps_prev_time = 0, fps_current_time;
 	Uint32 fps = 0;
-	Uint32 avgFPS = refresh_rate;
-	unsigned int frameCount = 1;
+	Uint32 fps_avg = refresh_rate;
+	unsigned int frame_count = 1;
 
+	// Cells creation
 	Cell** cells = cells_new(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
 	if (cells == NULL) {
 		fprintf(stderr, "Failed to create new cells\n");
 		return 2;
 	}
 
+	// Stuff for controlling logic calculations speed
+	Uint64 logic_prev_time = 0, logic_current_time;
+	Uint64 logic_delay = 50;  // in miliseconds
+
 	// Main loop
 	while (!quit) {
-		Uint32 frameTime = SDL_framerateDelay(&fpsManager);
+		Uint32 frame_time = SDL_framerateDelay(&fpsManager);
 
 		while(SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
@@ -120,6 +125,12 @@ int main() {
 							}
 						}
 						break;
+					case SDLK_RIGHT:
+					    logic_delay -= logic_delay > 0u ? 10u : 0u;
+						break;
+					case SDLK_LEFT:
+						logic_delay += 10;
+						break;
 				}
 			}
 
@@ -138,7 +149,8 @@ int main() {
 		}
 
 		// Logic
-		if (!pause) {
+		logic_current_time = SDL_GetTicks64();
+		if (!pause && logic_current_time > logic_prev_time + (1 / refresh_rate) * 1000 + logic_delay) {
 			// Count alive neighbours
 			for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
 				for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
@@ -190,6 +202,8 @@ int main() {
 					}
 				}
 			}
+
+			logic_prev_time = logic_current_time;
 		}
 
 		// Clear the screen with specified color
@@ -214,17 +228,19 @@ int main() {
 		}
 
 		// Calculate FPS every second
-		currentTime = SDL_GetTicks64();
-		if (currentTime > prevTime + 1000) {
-			avgFPS = fps / frameCount;
-			frameCount = 1;
+		fps_current_time = SDL_GetTicks64();
+		if (fps_current_time > fps_prev_time + 1000) {
+			fps_avg = fps / frame_count;
+			frame_count = 1;
 			fps = 0;
 
-			prevTime = currentTime;
+			printf("FPS: %d\n", fps_avg);
+
+			fps_prev_time = fps_current_time;
 		}
 		else {
-			fps += 1000.0f / (frameTime == (Uint32)0 ? (Uint32)1 : frameTime);
-			++frameCount;
+			fps += 1000.0f / (frame_time == (Uint32)0 ? (Uint32)1 : frame_time);
+			++frame_count;
 		}
 
 		SDL_RenderPresent(renderer);
