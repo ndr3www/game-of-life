@@ -1,4 +1,3 @@
-#include <SDL2/SDL_stdinc.h>
 #include <stdio.h>
 #include <time.h>
 #include <SDL2/SDL.h>
