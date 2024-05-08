@@ -4,7 +4,7 @@
 
 typedef struct CellStruct {
 	Sint16 pos_x, pos_y;
-	int alive;
+	int is_alive;
 	unsigned int alive_neighbours;
 } Cell;
 

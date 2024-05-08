@@ -22,7 +22,7 @@ Cell** cells_new(size_t width, size_t height, unsigned int size) {
 		for (size_t y = 0; y < height; ++y) {
 			cells[x][y].pos_x = x * size;
 			cells[x][y].pos_y = y * size;
-			cells[x][y].alive = rand() % 2;
+			cells[x][y].is_alive = rand() % 2;
 			cells[x][y].alive_neighbours = 0;
 		}
 	}

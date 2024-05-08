@@ -116,7 +116,7 @@ int main() {
 					case SDLK_r:
 						for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
 							for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
-								cells[x][y].alive = rand() % 2;
+								cells[x][y].is_alive = rand() % 2;
 							}
 						}
 						break;
@@ -130,7 +130,7 @@ int main() {
 					for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
 						if ((mouse_x >= cells[x][y].pos_x && mouse_x <= cells[x][y].pos_x + CELL_SIZE) &&
 							(mouse_y >= cells[x][y].pos_y && mouse_y <= cells[x][y].pos_y + CELL_SIZE)) {
-							cells[x][y].alive = 1;
+							cells[x][y].is_alive = 1;
 						}
 					}
 				}
@@ -146,35 +146,35 @@ int main() {
 
 					// right
 					if (x < CELL_NUMBER_WIDTH - 1) {
-						cells[x][y].alive_neighbours += cells[x + 1][y].alive ? 1 : 0;
+						cells[x][y].alive_neighbours += cells[x + 1][y].is_alive ? 1 : 0;
 					}
 					// left
 					if (x > 0) {
-						cells[x][y].alive_neighbours += cells[x - 1][y].alive ? 1 : 0;
+						cells[x][y].alive_neighbours += cells[x - 1][y].is_alive ? 1 : 0;
 					}
 					// top
 					if (y > 0) {
-						cells[x][y].alive_neighbours += cells[x][y - 1].alive ? 1 : 0;
+						cells[x][y].alive_neighbours += cells[x][y - 1].is_alive ? 1 : 0;
 					}
 					// bottom
 					if (y < CELL_NUMBER_HEIGHT - 1) {
-						cells[x][y].alive_neighbours += cells[x][y + 1].alive ? 1 : 0;
+						cells[x][y].alive_neighbours += cells[x][y + 1].is_alive ? 1 : 0;
 					}
 					// top right
 					if (x < CELL_NUMBER_WIDTH - 1 && y > 0) {
-						cells[x][y].alive_neighbours += cells[x + 1][y - 1].alive ? 1 : 0;
+						cells[x][y].alive_neighbours += cells[x + 1][y - 1].is_alive ? 1 : 0;
 					}
 					// top left
 					if (x > 0 && y > 0) {
-						cells[x][y].alive_neighbours += cells[x - 1][y - 1].alive ? 1 : 0;
+						cells[x][y].alive_neighbours += cells[x - 1][y - 1].is_alive ? 1 : 0;
 					}
 					// bottom right
 					if (x < CELL_NUMBER_WIDTH - 1 && y < CELL_NUMBER_HEIGHT - 1) {
-						cells[x][y].alive_neighbours += cells[x + 1][y + 1].alive ? 1 : 0;
+						cells[x][y].alive_neighbours += cells[x + 1][y + 1].is_alive ? 1 : 0;
 					}
 					// bottom left
 					if (x > 0 && y < CELL_NUMBER_HEIGHT - 1) {
-						cells[x][y].alive_neighbours += cells[x - 1][y + 1].alive ? 1 : 0;
+						cells[x][y].alive_neighbours += cells[x - 1][y + 1].is_alive ? 1 : 0;
 					}
 				}
 			}
@@ -182,11 +182,11 @@ int main() {
 			// Check rules
 			for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
 				for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
-					if (cells[x][y].alive) {
-						cells[x][y].alive = !(cells[x][y].alive_neighbours < 2 || cells[x][y].alive_neighbours > 3);
+					if (cells[x][y].is_alive) {
+						cells[x][y].is_alive = !(cells[x][y].alive_neighbours < 2 || cells[x][y].alive_neighbours > 3);
 					}
 					else {
-						cells[x][y].alive = (cells[x][y].alive_neighbours == 3);
+						cells[x][y].is_alive = (cells[x][y].alive_neighbours == 3);
 					}
 				}
 			}
@@ -206,7 +206,7 @@ int main() {
 				int return_code = boxColor(renderer,
 							 			   cells[x][y].pos_x, cells[x][y].pos_y,
 							 			   cells[x][y].pos_x + CELL_SIZE, cells[x][y].pos_y + CELL_SIZE,
-							 			   cells[x][y].alive ? 0xffffffff : 0x000000ff);
+							 			   cells[x][y].is_alive ? 0xffffffff : 0x000000ff);
 				if (return_code == -1) {
 					fprintf(stderr, "Failed to render cell[%lu][%lu]\n", x, y);
 				}
@@ -232,7 +232,6 @@ int main() {
 
 	// Clean up
 	cells_delete(cells, CELL_NUMBER_WIDTH);
-
 	close_SDL(&window, &renderer);
 
 	return 0;
