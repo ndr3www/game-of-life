@@ -73,8 +73,9 @@ void close_SDL(SDL_Window** window, SDL_Renderer** renderer) {
 }
 
 typedef struct CellStruct {
-	Sint16 x, y;
+	Sint16 pos_x, pos_y;
 	int alive;
+	unsigned int alive_neighbours;
 } Cell;
 
 int main() {
@@ -98,20 +99,29 @@ int main() {
 	Uint32 avgFPS = refresh_rate;
 	unsigned int frameCount = 1;
 
-	// Create cells
-	Cell* cells = malloc(sizeof(Cell) * CELL_NUMBER_TOTAL);
+	// Create cells in rows
+	Cell** cells = malloc(sizeof(Cell) * CELL_NUMBER_WIDTH);
 	if (cells == NULL) {
-		fprintf(stderr, "Failed to allocate cells memory\n");
+		fprintf(stderr, "Failed to allocate memory for cells in rows\n");
 		return 2;
 	}
 
+	// Create cells in columns
+	for (size_t i = 0; i < CELL_NUMBER_WIDTH; ++i) {
+		cells[i] = malloc(sizeof(Cell) * CELL_NUMBER_HEIGHT);
+		if (cells[i] == NULL) {
+			fprintf(stderr, "Failed to allocate memory for cells in columns\n");
+			return 2;
+		}
+	}
+
 	// Initialize cells
-	size_t index = 0;
-	for (int y = 0; y < SCREEN_HEIGHT; y += CELL_SIZE) {
-		for (int x = 0; x < SCREEN_WIDTH; x += CELL_SIZE) {
-			cells[index].x = x;
-			cells[index].y = y;
-			cells[index++].alive = rand() % 2;
+	for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
+		for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
+			cells[x][y].pos_x = x * CELL_SIZE;
+			cells[x][y].pos_y = y * CELL_SIZE;
+			cells[x][y].alive = rand() % 2;
+			cells[x][y].alive_neighbours = 0;
 		}
 	}
 
@@ -137,9 +147,67 @@ int main() {
 			// Change hovered cell state to alive when left mouse button has been clicked
 			int mouse_x, mouse_y;	
 			if (SDL_GetMouseState(&mouse_x, &mouse_y) == 1) {
-				for (size_t i = 0; i < CELL_NUMBER_TOTAL; ++i) {
-					if ((mouse_x >= cells[i].x && mouse_x <= cells[i].x + CELL_SIZE) && (mouse_y >= cells[i].y && mouse_y <= cells[i].y + CELL_SIZE)) {
-						cells[i].alive = 1;
+				for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
+					for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
+						if ((mouse_x >= cells[x][y].pos_x && mouse_x <= cells[x][y].pos_x + CELL_SIZE) &&
+							(mouse_y >= cells[x][y].pos_y && mouse_y <= cells[x][y].pos_y + CELL_SIZE)) {
+							cells[x][y].alive = 1;
+						}
+					}
+				}
+			}
+		}
+
+		// Logic
+		if (!pause) {
+			// Count alive neighbours
+			for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
+				for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
+					cells[x][y].alive_neighbours = 0;
+
+					// right
+					if (x < CELL_NUMBER_WIDTH - 1) {
+						cells[x][y].alive_neighbours += cells[x + 1][y].alive ? 1 : 0;
+					}
+					// left
+					if (x > 0) {
+						cells[x][y].alive_neighbours += cells[x - 1][y].alive ? 1 : 0;
+					}
+					// top
+					if (y > 0) {
+						cells[x][y].alive_neighbours += cells[x][y - 1].alive ? 1 : 0;
+					}
+					// bottom
+					if (y < CELL_NUMBER_HEIGHT - 1) {
+						cells[x][y].alive_neighbours += cells[x][y + 1].alive ? 1 : 0;
+					}
+					// top right
+					if (x < CELL_NUMBER_WIDTH - 1 && y > 0) {
+						cells[x][y].alive_neighbours += cells[x + 1][y - 1].alive ? 1 : 0;
+					}
+					// top left
+					if (x > 0 && y > 0) {
+						cells[x][y].alive_neighbours += cells[x - 1][y - 1].alive ? 1 : 0;
+					}
+					// bottom right
+					if (x < CELL_NUMBER_WIDTH - 1 && y < CELL_NUMBER_HEIGHT - 1) {
+						cells[x][y].alive_neighbours += cells[x + 1][y + 1].alive ? 1 : 0;
+					}
+					// bottom left
+					if (x > 0 && y < CELL_NUMBER_HEIGHT - 1) {
+						cells[x][y].alive_neighbours += cells[x - 1][y + 1].alive ? 1 : 0;
+					}
+				}
+			}
+
+			// Check rules
+			for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
+				for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
+					if (cells[x][y].alive) {
+						cells[x][y].alive = !(cells[x][y].alive_neighbours < 2 || cells[x][y].alive_neighbours > 3);
+					}
+					else {
+						cells[x][y].alive = (cells[x][y].alive_neighbours == 3);
 					}
 				}
 			}
@@ -154,9 +222,15 @@ int main() {
 		}
 
 		// Drawing 
-		for (size_t i = 0; i < CELL_NUMBER_TOTAL; ++i) {
-			if (boxColor(renderer, cells[i].x, cells[i].y, cells[i].x + CELL_SIZE, cells[i].y + CELL_SIZE, cells[i].alive ? 0xffffffff : 0x000000ff) == -1) {
-				fprintf(stderr, "Failed to render cell No. %lu\n", i);
+		for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
+			for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
+				int return_code = boxColor(renderer,
+							 			   cells[x][y].pos_x, cells[x][y].pos_y,
+							 			   cells[x][y].pos_x + CELL_SIZE, cells[x][y].pos_y + CELL_SIZE,
+							 			   cells[x][y].alive ? 0xffffffff : 0x000000ff);
+				if (return_code == -1) {
+					fprintf(stderr, "Failed to render cell[%lu][%lu]\n", x, y);
+				}
 			}
 		}
 
@@ -178,7 +252,11 @@ int main() {
 	}
 
 	// Clean up
+	for (size_t i = 0; i < CELL_NUMBER_WIDTH; ++i) {
+		free(cells[i]);
+	}
 	free(cells);
+
 	close_SDL(&window, &renderer);
 
 	return 0;
