@@ -141,6 +141,13 @@ int main() {
 					case SDLK_p:
 						pause = !pause;
 						break;
+					case SDLK_r:
+						for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
+							for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
+								cells[x][y].alive = rand() % 2;
+							}
+						}
+						break;
 				}
 			}
 
