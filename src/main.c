@@ -1,15 +1,15 @@
 #include <time.h>
 #include <SDL2/SDL2_framerate.h>
+#include "../lib/SDL_FontCache.h"
 
 #include "../include/cells.h"
 
-const Sint16 CELL_SIZE = 8;
-const unsigned int CELL_NUMBER_WIDTH = 128;
-const unsigned int CELL_NUMBER_HEIGHT = 100;
-const size_t CELL_NUMBER_TOTAL = CELL_NUMBER_WIDTH * CELL_NUMBER_HEIGHT;
+const Sint16 CELL_SIZE = 4;
+const unsigned int CELL_NUMBER_WIDTH = 256;
+const unsigned int CELL_NUMBER_HEIGHT = 200;
 
 const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
-const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT;
+const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT + CELL_SIZE * 6 * 3;
 int refresh_rate;
 
 int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager) {
@@ -91,6 +91,10 @@ int main() {
 	Uint32 fps_avg = refresh_rate;
 	unsigned int frame_count = 1;
 
+	// Stuff for controlling logic calculations speed
+	Uint64 logic_prev_time = 0, logic_current_time;
+	Uint64 logic_delay = 20;  // in miliseconds
+	
 	// Cells creation
 	Cell** cells = cells_new(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
 	if (cells == NULL) {
@@ -98,9 +102,12 @@ int main() {
 		return 2;
 	}
 
-	// Stuff for controlling logic calculations speed
-	Uint64 logic_prev_time = 0, logic_current_time;
-	Uint64 logic_delay = 50;  // in miliseconds
+	// Font setup
+	const Uint32 FONT_SIZE = 24;
+	FC_Font* font = FC_CreateFont();
+	FC_LoadFont(font, renderer, "../../fonts/Minecraft-Regular.otf", FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL);
+
+	size_t tick = 0;
 
 	// Main loop
 	while (!quit) {
@@ -110,27 +117,40 @@ int main() {
 			if (e.type == SDL_QUIT) {
 				quit = 1;
 			}
-			else if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
-				switch (e.key.keysym.sym) {
-					case SDLK_ESCAPE:
-						quit = 1;
-						break;
-					case SDLK_p:
-						pause = !pause;
-						break;
-					case SDLK_r:
-						for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
-							for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
-								cells[x][y].is_alive = rand() % 2;
+			else if (e.type == SDL_KEYDOWN) {
+				if (e.key.repeat == 0) {
+					switch (e.key.keysym.sym) {
+						case SDLK_ESCAPE:
+							quit = 1;
+							break;
+						case SDLK_p:
+							pause = !pause;
+							break;
+						case SDLK_r:
+							for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
+								for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
+									cells[x][y].is_alive = rand() % 2;
+								}
 							}
-						}
-						break;
-					case SDLK_RIGHT:
-					    logic_delay -= logic_delay > 0u ? 10u : 0u;
-						break;
-					case SDLK_LEFT:
-						logic_delay += 10;
-						break;
+							tick = 0;
+							break;
+						case SDLK_RIGHT:
+							logic_delay -= logic_delay > 0u ? 10u : 0u;
+							break;
+						case SDLK_LEFT:
+							logic_delay += logic_delay < 1000u ? 10u : 0;
+							break;
+					}
+				}
+				else {
+					switch (e.key.keysym.sym) {
+						case SDLK_RIGHT:
+							logic_delay -= logic_delay > 0u ? 10u : 0u;
+							break;
+						case SDLK_LEFT:
+							logic_delay += logic_delay < 1000u ? 10u : 0;
+							break;
+					}
 				}
 			}
 
@@ -150,7 +170,7 @@ int main() {
 
 		// Logic
 		logic_current_time = SDL_GetTicks64();
-		if (!pause && logic_current_time > logic_prev_time + (1 / refresh_rate) * 1000 + logic_delay) {
+		if (!pause && logic_current_time > logic_prev_time + logic_delay) {
 			// Count alive neighbours
 			for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
 				for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
@@ -203,6 +223,8 @@ int main() {
 				}
 			}
 
+			++tick;
+
 			logic_prev_time = logic_current_time;
 		}
 
@@ -230,18 +252,18 @@ int main() {
 		// Calculate FPS every second
 		fps_current_time = SDL_GetTicks64();
 		if (fps_current_time > fps_prev_time + 1000) {
-			fps_avg = fps / frame_count;
+			fps_avg = fps / frame_count + 1;
 			frame_count = 1;
 			fps = 0;
-
-			printf("FPS: %d\n", fps_avg);
 
 			fps_prev_time = fps_current_time;
 		}
 		else {
-			fps += 1000.0f / (frame_time == (Uint32)0 ? (Uint32)1 : frame_time);
+			fps += 1000.0f / (frame_time == 0u ? 1u : frame_time);
 			++frame_count;
 		}
+
+		FC_Draw(font, renderer, 0, SCREEN_HEIGHT - FONT_SIZE * 3, "FPS: %d\nTick: %lu\nDelay: %d\n", fps_avg, tick, logic_delay);
 
 		SDL_RenderPresent(renderer);
 	}
