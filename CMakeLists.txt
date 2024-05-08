@@ -17,5 +17,5 @@ find_package(SDL2 REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_GFX_INCLUDE_DIRS})
 
-add_executable(gof src/main.c)
+add_executable(gof src/main.c src/cells.c)
 target_link_libraries(gof ${SDL2_LIBRARIES} ${SDL2_GFX_LIBRARIES})

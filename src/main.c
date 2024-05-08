@@ -1,8 +1,7 @@
-#include <stdio.h>
 #include <time.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL2_framerate.h>
+
+#include "../include/cells.h"
 
 const Sint16 CELL_SIZE = 8;
 const unsigned int CELL_NUMBER_WIDTH = 128;
@@ -71,12 +70,6 @@ void close_SDL(SDL_Window** window, SDL_Renderer** renderer) {
 	SDL_Quit();
 }
 
-typedef struct CellStruct {
-	Sint16 pos_x, pos_y;
-	int alive;
-	unsigned int alive_neighbours;
-} Cell;
-
 int main() {
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
@@ -98,30 +91,10 @@ int main() {
 	Uint32 avgFPS = refresh_rate;
 	unsigned int frameCount = 1;
 
-	// Create cells in rows
-	Cell** cells = malloc(sizeof(Cell) * CELL_NUMBER_WIDTH);
+	Cell** cells = cells_new(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
 	if (cells == NULL) {
-		fprintf(stderr, "Failed to allocate memory for cells in rows\n");
+		fprintf(stderr, "Failed to create new cells\n");
 		return 2;
-	}
-
-	// Create cells in columns
-	for (size_t i = 0; i < CELL_NUMBER_WIDTH; ++i) {
-		cells[i] = malloc(sizeof(Cell) * CELL_NUMBER_HEIGHT);
-		if (cells[i] == NULL) {
-			fprintf(stderr, "Failed to allocate memory for cells in columns\n");
-			return 2;
-		}
-	}
-
-	// Initialize cells
-	for (size_t x = 0; x < CELL_NUMBER_WIDTH; ++x) {
-		for (size_t y = 0; y < CELL_NUMBER_HEIGHT; ++y) {
-			cells[x][y].pos_x = x * CELL_SIZE;
-			cells[x][y].pos_y = y * CELL_SIZE;
-			cells[x][y].alive = rand() % 2;
-			cells[x][y].alive_neighbours = 0;
-		}
 	}
 
 	// Main loop
@@ -258,10 +231,7 @@ int main() {
 	}
 
 	// Clean up
-	for (size_t i = 0; i < CELL_NUMBER_WIDTH; ++i) {
-		free(cells[i]);
-	}
-	free(cells);
+	cells_delete(cells, CELL_NUMBER_WIDTH);
 
 	close_SDL(&window, &renderer);
 
