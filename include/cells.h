@@ -8,8 +8,14 @@ typedef struct CellStruct {
 	unsigned int alive_neighbours;
 } Cell;
 
+typedef struct CellsGridStruct {
+	size_t width, height;
+	unsigned int cell_size;
+	Cell** cell;
+} CellsGrid;
+
 // Constructor
-Cell** cells_new(size_t width, size_t height, unsigned int size);
+CellsGrid* cells_grid_new(size_t width, size_t height, unsigned int cell_size);
 
 // Destructor
-void cells_delete(Cell** cells, size_t width);
+void cells_grid_delete(CellsGrid* cells_grid);

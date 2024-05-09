@@ -1,17 +1,27 @@
 #include "../include/cells.h"
 
-Cell** cells_new(size_t width, size_t height, unsigned int size) {
+CellsGrid* cells_grid_new(size_t width, size_t height, unsigned int cell_size) {
+	CellsGrid* cells_grid = malloc(sizeof(CellsGrid));
+	if (cells_grid == NULL) {
+		fprintf(stderr, "Failed to allocate memory for cells grid\n");
+		return NULL;
+	}
+
+	cells_grid->width = width;
+	cells_grid->height = height;
+	cells_grid->cell_size = cell_size;
+
 	// Create cells in rows
-	Cell** cells = malloc(sizeof(Cell) * width);
-	if (cells == NULL) {
+	Cell** cell = malloc(sizeof(Cell) * width);
+	if (cell == NULL) {
 		fprintf(stderr, "Failed to allocate memory for cells in rows\n");
 		return NULL;
 	}
 
 	// Create cells in columns
 	for (size_t i = 0; i < width; ++i) {
-		cells[i] = malloc(sizeof(Cell) * height);
-		if (cells[i] == NULL) {
+		cell[i] = malloc(sizeof(Cell) * height);
+		if (cell[i] == NULL) {
 			fprintf(stderr, "Failed to allocate memory for cells in columns\n");
 			return NULL;
 		}
@@ -20,19 +30,23 @@ Cell** cells_new(size_t width, size_t height, unsigned int size) {
 	// Initialize cells
 	for (size_t x = 0; x < width; ++x) {
 		for (size_t y = 0; y < height; ++y) {
-			cells[x][y].pos_x = x * size;
-			cells[x][y].pos_y = y * size;
-			cells[x][y].is_alive = rand() % 2;
-			cells[x][y].alive_neighbours = 0;
+			cell[x][y].pos_x = x * cell_size;
+			cell[x][y].pos_y = y * cell_size;
+			cell[x][y].is_alive = rand() % 2;
+			cell[x][y].alive_neighbours = 0;
 		}
 	}
 
-	return cells;
+	cells_grid->cell = cell;
+
+	return cells_grid;
 }
 
-void cells_delete(Cell **cells, size_t width) {
-	for (size_t i = 0; i < width; ++i) {
-		free(cells[i]);
+void cells_grid_delete(CellsGrid* cells_grid) {
+	for (size_t i = 0; i < cells_grid->width; ++i) {
+		free(cells_grid->cell[i]);
 	}
-	free(cells);
+	free(cells_grid->cell);
+
+	free(cells_grid);
 }
