@@ -19,5 +19,5 @@ find_package(SDL2 REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_GFX_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
 
-add_executable(gof src/main.c src/cells.c lib/SDL_FontCache.c)
+add_executable(gof src/main.c src/utils.c src/cells.c lib/SDL_FontCache.c)
 target_link_libraries(gof ${SDL2_LIBRARIES} ${SDL2_GFX_LIBRARIES} ${SDL2_TTF_LIBRARIES})

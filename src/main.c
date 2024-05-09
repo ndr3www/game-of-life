@@ -1,7 +1,7 @@
 #include <time.h>
-#include <SDL2/SDL2_framerate.h>
 #include "../lib/SDL_FontCache.h"
 
+#include "../include/utils.h"
 #include "../include/cells.h"
 
 const Uint32 FONT_SIZE = 24;
@@ -13,74 +13,22 @@ const unsigned int CELL_NUMBER_HEIGHT = 100;
 
 const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
 const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT + GUI_GAP;
-int refresh_rate;
-
-int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager) {
-	// Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		fprintf(stderr, "Failed to initialize SDL: %s\n", SDL_GetError());
-		return -1;
-	}
-
-	// Create window
-	*window = SDL_CreateWindow("Game of life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	if (*window == NULL) {
-		fprintf(stderr, "Failed to create window: %s\n", SDL_GetError());
-		return -1;
-	}
-
-	// Initialize framerate manager
-	SDL_initFramerate(fps_manager);
-
-	// Get index of a display associated with SDL window
-	int displayIndex = SDL_GetWindowDisplayIndex(*window);
-	if (displayIndex < 0) {
-		fprintf(stderr, "Failed to retrieve index of a display associated with SDL window: %s\n", SDL_GetError());
-		return -1;
-	}
-
-	// Get current display mode
-	SDL_DisplayMode displayMode;
-	if (SDL_GetCurrentDisplayMode(displayIndex, &displayMode) != 0) {
-		fprintf(stderr, "Failed to retrieve display information: %s\n", SDL_GetError());
-		return -1;
-	}
-
-	// Set target framerate for framerate manager
-	refresh_rate = displayMode.refresh_rate;
-	if (SDL_setFramerate(fps_manager, refresh_rate) != 0) {
-		fprintf(stderr, "Failed to set target framerate for framerate manager\n");
-		return -1;
-	}
-
-	// Create renderer
-	*renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (*renderer == NULL) {
-		fprintf(stderr, "Failed to create renderer: %s\n", SDL_GetError());
-		return -1;
-	}
-
-	// Initialize RNG
-	srand(time(NULL));
-
-	return 0;
-}
-
-void close_SDL(SDL_Window* window, SDL_Renderer* renderer) {
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-
-	SDL_Quit();
-}
 
 int main() {
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
 	FPSmanager fpsManager;
 
-	if (init_SDL(&window, &renderer, &fpsManager) != 0) {
+	if (init_SDL(&window, &renderer, &fpsManager, SCREEN_WIDTH, SCREEN_HEIGHT) != 0) {
 		return 1;
 	}
+
+	// Font setup
+	FC_Font* font = FC_CreateFont();
+	FC_LoadFont(font, renderer, "../../fonts/Minecraft-Regular.otf", FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL);
+	
+	// Initialize RNG
+	srand(time(NULL));
 
 	// Main loop flags
 	int quit = 0, pause = 1;
@@ -91,21 +39,17 @@ int main() {
 	// Stuff for calculating FPS at set interval
 	Uint64 fps_prev_time = 0, fps_current_time;
 	Uint32 fps = 0;
-	Uint32 fps_avg = refresh_rate;
+	Uint32 fps_avg = 0;
 	unsigned int frame_count = 1;
 
 	// Stuff for controlling logic calculations speed
 	Uint64 logic_prev_time = 0, logic_current_time;
 	Uint64 logic_delay = 20;  // in miliseconds
-	
-	// Cells creation
-	CellsGrid* cells_grid = cells_grid_new(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
-
-	// Font setup
-	FC_Font* font = FC_CreateFont();
-	FC_LoadFont(font, renderer, "../../fonts/Minecraft-Regular.otf", FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL);
 
 	size_t tick = 0;
+
+	// Cells creation
+	CellsGrid* cells_grid = cells_grid_new(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
 
 	// Main loop
 	while (!quit) {
