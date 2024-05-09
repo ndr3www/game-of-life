@@ -15,7 +15,7 @@ typedef struct CellsGridStruct {
 } CellsGrid;
 
 // Constructor
-CellsGrid* cells_grid_new(size_t width, size_t height, unsigned int cell_size);
+CellsGrid* CellsGrid_create(size_t width, size_t height, unsigned int cell_size);
 
 // Destructor
-void cells_grid_delete(CellsGrid* cells_grid);
+void CellsGrid_delete(CellsGrid* cells_grid);

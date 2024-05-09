@@ -1,6 +1,6 @@
 #include "../include/cells.h"
 
-CellsGrid* cells_grid_new(size_t width, size_t height, unsigned int cell_size) {
+CellsGrid* CellsGrid_create(size_t width, size_t height, unsigned int cell_size) {
 	CellsGrid* cells_grid = malloc(sizeof(CellsGrid));
 	if (cells_grid == NULL) {
 		fprintf(stderr, "Failed to allocate memory for cells grid\n");
@@ -42,7 +42,7 @@ CellsGrid* cells_grid_new(size_t width, size_t height, unsigned int cell_size) {
 	return cells_grid;
 }
 
-void cells_grid_delete(CellsGrid* cells_grid) {
+void CellsGrid_delete(CellsGrid* cells_grid) {
 	for (size_t i = 0; i < cells_grid->width; ++i) {
 		free(cells_grid->cell[i]);
 	}

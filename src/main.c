@@ -49,7 +49,7 @@ int main() {
 	size_t tick = 0;
 
 	// Cells creation
-	CellsGrid* cells_grid = cells_grid_new(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
+	CellsGrid* cells_grid = CellsGrid_create(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
 
 	// Main loop
 	while (!quit) {
@@ -211,7 +211,7 @@ int main() {
 	}
 
 	// Clean up
-	cells_grid_delete(cells_grid);
+	CellsGrid_delete(cells_grid);
 	FC_FreeFont(font);
 	close_SDL(window, renderer);
 
