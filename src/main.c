@@ -4,12 +4,15 @@
 
 #include "../include/cells.h"
 
+const Uint32 FONT_SIZE = 24;
+const Uint32 GUI_GAP = FONT_SIZE * 3;
+
 const Sint16 CELL_SIZE = 4;
 const unsigned int CELL_NUMBER_WIDTH = 256;
 const unsigned int CELL_NUMBER_HEIGHT = 200;
 
 const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
-const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT + CELL_SIZE * 6 * 3;
+const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT + GUI_GAP;
 int refresh_rate;
 
 int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager) {
@@ -103,7 +106,6 @@ int main() {
 	}
 
 	// Font setup
-	const Uint32 FONT_SIZE = 24;
 	FC_Font* font = FC_CreateFont();
 	FC_LoadFont(font, renderer, "../../fonts/Minecraft-Regular.otf", FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL);
 
@@ -263,7 +265,7 @@ int main() {
 			++frame_count;
 		}
 
-		FC_Draw(font, renderer, 0, SCREEN_HEIGHT - FONT_SIZE * 3, "FPS: %d\nTick: %lu\nDelay: %d\n", fps_avg, tick, logic_delay);
+		FC_Draw(font, renderer, 0, SCREEN_HEIGHT - GUI_GAP, "FPS: %d\nTick: %lu\nDelay: %d\n", fps_avg, tick, logic_delay);
 
 		SDL_RenderPresent(renderer);
 	}
