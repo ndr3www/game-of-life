@@ -101,8 +101,8 @@ int main() {
 			if (SDL_GetMouseState(&mouse_x, &mouse_y) == 1) {
 				for (size_t x = 0; x < cells_grid->width; ++x) {
 					for (size_t y = 0; y < cells_grid->height; ++y) {
-						if ((mouse_x >= cells_grid->cell[x][y].pos_x && mouse_x <= cells_grid->cell[x][y].pos_x + CELL_SIZE) &&
-							(mouse_y >= cells_grid->cell[x][y].pos_y && mouse_y <= cells_grid->cell[x][y].pos_y + CELL_SIZE)) {
+						if ((mouse_x >= cells_grid->cell[x][y].pos_x && (unsigned)mouse_x <= cells_grid->cell[x][y].pos_x + cells_grid->cell_size) &&
+							(mouse_y >= cells_grid->cell[x][y].pos_y && (unsigned)mouse_y <= cells_grid->cell[x][y].pos_y + cells_grid->cell_size)) {
 							cells_grid->cell[x][y].is_alive = 1;
 						}
 					}
@@ -183,7 +183,7 @@ int main() {
 			for (size_t y = 0; y < cells_grid->height; ++y) {
 				int return_code = boxColor(renderer,
 							 			   cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
-							 			   cells_grid->cell[x][y].pos_x + CELL_SIZE, cells_grid->cell[x][y].pos_y + CELL_SIZE,
+							 			   cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
 							 			   cells_grid->cell[x][y].is_alive ? 0xffffffff : 0x000000ff);
 				if (return_code == -1) {
 					fprintf(stderr, "Failed to render cell[%lu][%lu]\n", x, y);
