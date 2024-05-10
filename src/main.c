@@ -198,7 +198,7 @@ int main() {
 		// Calculate FPS every second
 		fps_current_time = SDL_GetTicks64();
 		if (fps_current_time > fps_prev_time + 1000) {
-			fps_avg = fps / frame_count + 1;
+			fps_avg = fps / frame_count + 2;
 			frame_count = 1;
 			fps = 0;
 
