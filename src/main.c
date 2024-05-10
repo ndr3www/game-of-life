@@ -22,7 +22,8 @@ enum Directions {
 	TOP = -1,
 	RIGHT = 1,
 	BOTTOM = 1,
-	LEFT = -1
+	LEFT = -1,
+	NA = 0
 };
 
 int main() {
@@ -65,13 +66,13 @@ int main() {
 	// Define directions for counting alive neighbours
 	Pair_Sint16 directions[] = {
 		{TOP, LEFT},
-		{TOP, 0},
+		{TOP, NA},
 		{TOP, RIGHT},
-		{0, RIGHT},
+		{NA, RIGHT},
 		{BOTTOM, RIGHT},
-		{BOTTOM, 0},
+		{BOTTOM, NA},
 		{BOTTOM, LEFT},
-		{0, LEFT}
+		{NA, LEFT}
 	};
 	const int DIRECTIONS_SIZE = sizeof(directions) / sizeof(directions[0]);
 
