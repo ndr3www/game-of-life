@@ -95,6 +95,7 @@ int main() {
 									cells_grid->cell[x][y].is_alive = 0;
 								}
 							}
+							tick = 0;
 							break;
 					}
 				}
