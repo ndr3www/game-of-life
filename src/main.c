@@ -89,6 +89,13 @@ int main() {
 							}
 							tick = 0;
 							break;
+						case SDLK_c:
+							for (size_t x = 0; x < cells_grid->width; ++x) {
+								for (size_t y = 0; y < cells_grid->height; ++y) {
+									cells_grid->cell[x][y].is_alive = 0;
+								}
+							}
+							break;
 					}
 				}
 				else {
