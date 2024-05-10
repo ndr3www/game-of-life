@@ -114,8 +114,8 @@ int main() {
 			if (SDL_GetMouseState(&mouse_x, &mouse_y) == 1) {
 				for (size_t x = 0; x < cells_grid->width; ++x) {
 					for (size_t y = 0; y < cells_grid->height; ++y) {
-						if ((mouse_x >= cells_grid->cell[x][y].pos_x && (unsigned)mouse_x <= cells_grid->cell[x][y].pos_x + cells_grid->cell_size) &&
-							(mouse_y >= cells_grid->cell[x][y].pos_y && (unsigned)mouse_y <= cells_grid->cell[x][y].pos_y + cells_grid->cell_size)) {
+						if (mouse_x >= cells_grid->cell[x][y].pos_x && (unsigned)mouse_x <= cells_grid->cell[x][y].pos_x + cells_grid->cell_size &&
+							mouse_y >= cells_grid->cell[x][y].pos_y && (unsigned)mouse_y <= cells_grid->cell[x][y].pos_y + cells_grid->cell_size) {
 							cells_grid->cell[x][y].is_alive = 1;
 						}
 					}
