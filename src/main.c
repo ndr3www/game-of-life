@@ -25,10 +25,19 @@ int main() {
 
 	// Font setup
 	FC_Font* font = FC_CreateFont();
-	FC_LoadFont(font, renderer, "../../fonts/Minecraft-Regular.otf", FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL);
+	const char* font_path = "../../fonts/Minecraft-Regular.otf";
+	if (!FC_LoadFont(font, renderer, font_path, FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL)) {
+		fprintf(stderr, "Failed to load font %s\n", font_path);
+		return 2;
+	}
 	
 	// Initialize RNG
-	srand(time(NULL));
+	time_t unix_time = time(NULL);
+	if (unix_time == (time_t)(-1)) {
+		fprintf(stderr, "Failed to retrieve current Unix timestamp\n");
+		return 3;
+	}
+	srand(unix_time);
 
 	// Main loop flags
 	int quit = 0, pause = 1;
@@ -50,6 +59,10 @@ int main() {
 
 	// Cells creation
 	CellsGrid* cells_grid = CellsGrid_create(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
+	if (cells_grid == NULL) {
+		fprintf(stderr, "Failed to create cells\n");
+		return 4;
+	}
 
 	// Define directions for counting alive neighbours
 	Pair_Sint16 directions[] = {
