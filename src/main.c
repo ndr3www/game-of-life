@@ -98,15 +98,14 @@ int main() {
 							break;
 					}
 				}
-				else {
-					switch (e.key.keysym.sym) {
-						case SDLK_RIGHT:
-							logic_delay -= logic_delay > 0u ? 10u : 0u;
-							break;
-						case SDLK_LEFT:
-							logic_delay += logic_delay < 1000u ? 10u : 0;
-							break;
-					}
+
+				switch (e.key.keysym.sym) {
+					case SDLK_RIGHT:
+						logic_delay -= logic_delay > 0u ? 10u : 0u;
+						break;
+					case SDLK_LEFT:
+						logic_delay += logic_delay < 1000u ? 10u : 0;
+						break;
 				}
 			}
 
