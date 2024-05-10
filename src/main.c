@@ -4,27 +4,15 @@
 #include "../include/utils.h"
 #include "../include/cells.h"
 
-const Uint32 FONT_SIZE = 24;
-const Uint32 GUI_GAP = FONT_SIZE * 3;
+static const Uint32 FONT_SIZE = 24;
+static const Uint32 GUI_GAP = FONT_SIZE * 3;
 
-const Sint16 CELL_SIZE = 8;
-const unsigned int CELL_NUMBER_WIDTH = 128;
-const unsigned int CELL_NUMBER_HEIGHT = 100;
+static const Sint16 CELL_SIZE = 8;
+static const unsigned int CELL_NUMBER_WIDTH = 128;
+static const unsigned int CELL_NUMBER_HEIGHT = 100;
 
-const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
-const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT + GUI_GAP;
-
-typedef struct Pair_Sint16_Struct {
-	Sint16 y, x;
-} Pair_Sint16;
-
-enum Directions {
-	TOP = -1,
-	RIGHT = 1,
-	BOTTOM = 1,
-	LEFT = -1,
-	NA = 0
-};
+static const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
+static const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT + GUI_GAP;
 
 int main() {
 	SDL_Window* window = NULL;
