@@ -14,6 +14,17 @@ const unsigned int CELL_NUMBER_HEIGHT = 100;
 const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
 const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT + GUI_GAP;
 
+typedef struct Pair_Sint16_Struct {
+	Sint16 y, x;
+} Pair_Sint16;
+
+enum Directions {
+	TOP = -1,
+	RIGHT = 1,
+	BOTTOM = 1,
+	LEFT = -1
+};
+
 int main() {
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
@@ -50,6 +61,19 @@ int main() {
 
 	// Cells creation
 	CellsGrid* cells_grid = CellsGrid_create(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
+
+	// Define directions for counting alive neighbours
+	Pair_Sint16 directions[] = {
+		{TOP, LEFT},
+		{TOP, 0},
+		{TOP, RIGHT},
+		{0, RIGHT},
+		{BOTTOM, RIGHT},
+		{BOTTOM, 0},
+		{BOTTOM, LEFT},
+		{0, LEFT}
+	};
+	const int DIRECTIONS_SIZE = sizeof(directions) / sizeof(directions[0]);
 
 	// Main loop
 	while (!quit) {
@@ -118,37 +142,13 @@ int main() {
 				for (size_t y = 0; y < cells_grid->height; ++y) {
 					cells_grid->cell[x][y].alive_neighbours = 0;
 
-					// right
-					if (x < cells_grid->width - 1) {
-						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x + 1][y].is_alive ? 1 : 0;
-					}
-					// left
-					if (x > 0) {
-						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x - 1][y].is_alive ? 1 : 0;
-					}
-					// top
-					if (y > 0) {
-						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x][y - 1].is_alive ? 1 : 0;
-					}
-					// bottom
-					if (y < cells_grid->height - 1) {
-						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x][y + 1].is_alive ? 1 : 0;
-					}
-					// top right
-					if (x < cells_grid->width - 1 && y > 0) {
-						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x + 1][y - 1].is_alive ? 1 : 0;
-					}
-					// top left
-					if (x > 0 && y > 0) {
-						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x - 1][y - 1].is_alive ? 1 : 0;
-					}
-					// bottom right
-					if (x < cells_grid->width - 1 && y < cells_grid->height - 1) {
-						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x + 1][y + 1].is_alive ? 1 : 0;
-					}
-					// bottom left
-					if (x > 0 && y < cells_grid->height - 1) {
-						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x - 1][y + 1].is_alive ? 1 : 0;
+					for (int i = 0; i < DIRECTIONS_SIZE; ++i) {
+						Sint16 x_new = x + directions[i].x;
+						Sint16 y_new = y + directions[i].y;
+
+						if ((x_new >= 0 && x_new < (Sint16)cells_grid->width) && (y_new >= 0 && y_new < (Sint16)cells_grid->height)) {
+							cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x_new][y_new].is_alive ? 1 : 0;
+						}
 					}
 				}
 			}
