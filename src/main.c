@@ -109,14 +109,15 @@ int main() {
 				}
 			}
 
-			// Change hovered cell state to alive when left mouse button has been clicked
-			int mouse_x, mouse_y;	
-			if (SDL_GetMouseState(&mouse_x, &mouse_y) == 1) {
+			// Change hovered cell state (left button - alive, others - dead)
+			int mouse_x, mouse_y;
+			Uint32 mouse_button = SDL_GetMouseState(&mouse_x, &mouse_y);
+			if (mouse_button > 0) {
 				for (size_t x = 0; x < cells_grid->width; ++x) {
 					for (size_t y = 0; y < cells_grid->height; ++y) {
 						if (mouse_x >= cells_grid->cell[x][y].pos_x && (unsigned)mouse_x <= cells_grid->cell[x][y].pos_x + cells_grid->cell_size &&
 							mouse_y >= cells_grid->cell[x][y].pos_y && (unsigned)mouse_y <= cells_grid->cell[x][y].pos_y + cells_grid->cell_size) {
-							cells_grid->cell[x][y].is_alive = 1;
+							cells_grid->cell[x][y].is_alive = mouse_button == 1 ? 1 : 0;
 						}
 					}
 				}
