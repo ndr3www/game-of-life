@@ -44,7 +44,7 @@ int main() {
 
 	// Stuff for controlling logic calculations speed
 	Uint64 logic_prev_time = 0, logic_current_time;
-	Uint64 logic_delay = 20;  // in miliseconds
+	Uint64 logic_delay = 0;  // in miliseconds
 
 	size_t tick = 0;
 
@@ -104,7 +104,7 @@ int main() {
 						logic_delay -= logic_delay > 0u ? 10u : 0u;
 						break;
 					case SDLK_LEFT:
-						logic_delay += logic_delay < 1000u ? 10u : 0;
+						logic_delay += logic_delay < 990u ? 10u : 0;
 						break;
 				}
 			}
@@ -195,7 +195,7 @@ int main() {
 			++frame_count;
 		}
 
-		FC_Draw(font, renderer, 0, SCREEN_HEIGHT - GUI_GAP, "FPS: %d\nTick: %lu\nDelay: %d\n", fps_avg, tick, logic_delay);
+		FC_Draw(font, renderer, 0, SCREEN_HEIGHT - GUI_GAP, "FPS: %d\nTick: %lu\nSpeed: x%.2f\n", fps_avg, tick, (-(logic_delay / 100.0f) + 10.0f) / 10.0f);
 
 		SDL_RenderPresent(renderer);
 	}
