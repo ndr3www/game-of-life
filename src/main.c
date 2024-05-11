@@ -188,7 +188,7 @@ int main() {
 				int return_code = boxColor(renderer,
 							 			   cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
 							 			   cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
-							 			   cells_grid->cell[x][y].is_alive ? 0xffffffff : 0x000000ff);
+							 			   cells_grid->cell[x][y].is_alive ? WHITE_HEX : BLACK_HEX);
 				if (return_code != 0) {
 					fprintf(stderr, "Failed to render cell[%lu][%lu]\n", x, y);
 				}

@@ -2,6 +2,14 @@
 
 #include <SDL2/SDL2_framerate.h>
 
+#define WHITE_HEX 0xffffffff
+
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	#define BLACK_HEX 0x000000ff
+#else
+	#define BLACK_HEX 0xff000000
+#endif
+
 typedef struct Pair_Sint16_Struct {
 	Sint16 y, x;
 } Pair_Sint16;
