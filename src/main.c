@@ -25,7 +25,7 @@ int main() {
 
 	// Font setup
 	FC_Font* font = FC_CreateFont();
-	const char* font_path = "../../fonts/Minecraft-Regular.otf";
+	const char* font_path = "fonts/Minecraft-Regular.otf";
 	if (!FC_LoadFont(font, renderer, font_path, FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL)) {
 		fprintf(stderr, "Failed to load font %s\n", font_path);
 		return 2;
