@@ -136,11 +136,22 @@ int main() {
 
 					for (int i = 0; i < DIRECTIONS_SIZE; ++i) {
 						Sint16 x_new = x + directions[i].x;
-						Sint16 y_new = y + directions[i].y;
-
-						if ((x_new >= 0 && x_new < (Sint16)cells_grid->width) && (y_new >= 0 && y_new < (Sint16)cells_grid->height)) {
-							cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x_new][y_new].is_alive ? 1 : 0;
+						if (x_new < 0) {
+							x_new = cells_grid->width - 1;
 						}
+						else if ((Uint16)x_new > cells_grid->width - 1) {
+							x_new = 0;
+						}
+
+						Sint16 y_new = y + directions[i].y;
+						if (y_new < 0) {
+							y_new = cells_grid->height - 1;
+						}
+						else if ((Uint16)y_new > cells_grid->height - 1) {
+							y_new = 0;
+						}
+
+						cells_grid->cell[x][y].alive_neighbours += cells_grid->cell[x_new][y_new].is_alive ? 1 : 0;
 					}
 				}
 			}
