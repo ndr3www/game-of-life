@@ -19,3 +19,6 @@ CellsGrid* CellsGrid_create(size_t width, size_t height, unsigned int cell_size)
 
 // Destructor
 void CellsGrid_delete(CellsGrid* cells_grid);
+
+// Drawing
+void CellsGrid_draw(SDL_Renderer* renderer, CellsGrid* cells_grid);

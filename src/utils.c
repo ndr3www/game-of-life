@@ -70,3 +70,13 @@ void mouse_controls(CellsGrid* cells_grid) {
 		}
 	}
 }
+
+void clear_screen(SDL_Renderer* renderer, Uint32 color) {
+	Uint8* c = (Uint8*)&color;
+	if (SDL_SetRenderDrawColor(renderer, c[0], c[1], c[2], c[3]) != 0) {
+		fprintf(stderr, "Failed to set the color for SDL_RenderClear: %s\n", SDL_GetError());
+	}
+	if (SDL_RenderClear(renderer) != 0) {
+		fprintf(stderr, "Failed to clear the screen: %s\n", SDL_GetError());
+	}
+}

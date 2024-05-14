@@ -28,3 +28,5 @@ int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manag
 void close_SDL(SDL_Window* window, SDL_Renderer* renderer);
 
 void mouse_controls(CellsGrid* cells_grid);
+
+void clear_screen(SDL_Renderer* renderer, Uint32 color);

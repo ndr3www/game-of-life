@@ -1,4 +1,5 @@
 #include "../include/cells.h"
+#include "../include/utils.h"
 
 CellsGrid* CellsGrid_create(size_t width, size_t height, unsigned int cell_size) {
 	CellsGrid* cells_grid = malloc(sizeof(CellsGrid));
@@ -49,4 +50,18 @@ void CellsGrid_delete(CellsGrid* cells_grid) {
 	free(cells_grid->cell);
 
 	free(cells_grid);
+}
+
+void CellsGrid_draw(SDL_Renderer* renderer, CellsGrid* cells_grid) {
+	for (size_t x = 0; x < cells_grid->width; ++x) {
+		for (size_t y = 0; y < cells_grid->height; ++y) {
+			int return_code = boxColor(renderer,
+									   cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
+									   cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
+									   cells_grid->cell[x][y].is_alive ? WHITE_HEX : BLACK_HEX);
+			if (return_code != 0) {
+				fprintf(stderr, "Failed to render cell[%lu][%lu]\n", x, y);
+			}
+		}
+	}
 }

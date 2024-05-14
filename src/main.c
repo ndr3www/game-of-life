@@ -162,26 +162,9 @@ int main() {
 			logic_prev_time = logic_current_time;
 		}
 
-		// Clear the screen with specified color
-		if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255) != 0) {
-			fprintf(stderr, "Failed to set the color for SDL_RenderClear: %s\n", SDL_GetError());
-		}
-		if (SDL_RenderClear(renderer) != 0) {
-			fprintf(stderr, "Failed to clear the screen: %s\n", SDL_GetError());
-		}
+		clear_screen(renderer, BLACK_HEX);
 
-		// Drawing 
-		for (size_t x = 0; x < cells_grid->width; ++x) {
-			for (size_t y = 0; y < cells_grid->height; ++y) {
-				int return_code = boxColor(renderer,
-							 			   cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
-							 			   cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
-							 			   cells_grid->cell[x][y].is_alive ? WHITE_HEX : BLACK_HEX);
-				if (return_code != 0) {
-					fprintf(stderr, "Failed to render cell[%lu][%lu]\n", x, y);
-				}
-			}
-		}
+		CellsGrid_draw(renderer, cells_grid);
 
 		// Calculate FPS every second
 		fps_current_time = SDL_GetTicks64();
