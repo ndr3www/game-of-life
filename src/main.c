@@ -12,7 +12,7 @@ static const unsigned int CELL_NUMBER_WIDTH = 128;
 static const unsigned int CELL_NUMBER_HEIGHT = 100;
 
 static const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
-static const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT + GUI_GAP;
+static const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT;
 
 int main() {
 	SDL_Window* window = NULL;
@@ -56,6 +56,8 @@ int main() {
 	Uint64 logic_delay = 0;  // in miliseconds
 
 	size_t tick = 0;
+
+	SDL_Rect viewport = {0, GUI_GAP, SCREEN_WIDTH, SCREEN_HEIGHT - GUI_GAP};
 
 	// Cells creation
 	CellsGrid* cells_grid = CellsGrid_create(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
@@ -123,7 +125,7 @@ int main() {
 				}
 			}
 
-			mouse_controls(cells_grid);
+			mouse_controls(cells_grid, &viewport);
 		}
 
 		// Logic
@@ -175,7 +177,7 @@ int main() {
 
 		clear_screen(renderer, BLACK_HEX);
 
-		CellsGrid_draw(renderer, cells_grid);
+		CellsGrid_draw(renderer, &viewport, cells_grid);
 
 		// Calculate FPS every second
 		fps_current_time = SDL_GetTicks64();
@@ -191,7 +193,8 @@ int main() {
 			++frame_count;
 		}
 
-		FC_Draw(font, renderer, 0, SCREEN_HEIGHT - GUI_GAP, "FPS: %d\nTick: %lu\nSpeed: x%.2f\n", fps_avg, tick, (-(logic_delay / 100.0f) + 10.0f) / 10.0f);
+		SDL_RenderSetViewport(renderer, NULL);
+		FC_Draw(font, renderer, 0, 0, "FPS: %d\nTick: %lu\nSpeed: x%.2f\n", fps_avg, tick, (-(logic_delay / 100.0f) + 10.0f) / 10.0f);
 
 		SDL_RenderPresent(renderer);
 	}

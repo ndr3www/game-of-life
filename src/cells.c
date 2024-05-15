@@ -52,9 +52,10 @@ void CellsGrid_delete(CellsGrid* cells_grid) {
 	free(cells_grid);
 }
 
-void CellsGrid_draw(SDL_Renderer* renderer, CellsGrid* cells_grid) {
+void CellsGrid_draw(SDL_Renderer* renderer, SDL_Rect* viewport, CellsGrid* cells_grid) {
 	for (size_t x = 0; x < cells_grid->width; ++x) {
 		for (size_t y = 0; y < cells_grid->height; ++y) {
+			SDL_RenderSetViewport(renderer, viewport);
 			int return_code = boxColor(renderer,
 									   cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
 									   cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,

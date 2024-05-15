@@ -54,9 +54,11 @@ void close_SDL(SDL_Window* window, SDL_Renderer* renderer) {
 	SDL_Quit();
 }
 
-void mouse_controls(CellsGrid* cells_grid) {
+void mouse_controls(CellsGrid* cells_grid, SDL_Rect* viewport) {
 	int mouse_x, mouse_y;
 	Uint32 mouse_button = SDL_GetMouseState(&mouse_x, &mouse_y);
+	mouse_x -= viewport->x;
+	mouse_y -= viewport->y;
 
 	// Change hovered cell state (left button - alive, others - dead)
 	if (mouse_button > 0) {
