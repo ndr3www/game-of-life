@@ -193,7 +193,9 @@ int main() {
 			++frame_count;
 		}
 
-		SDL_RenderSetViewport(renderer, NULL);
+		if (SDL_RenderSetViewport(renderer, NULL) != 0) {
+			fprintf(stderr, "Failed to set viewport for GUI: %s\n", SDL_GetError());
+		}
 		FC_Draw(font, renderer, 0, 0, "FPS: %d\nTick: %lu\nSpeed: x%.2f\n", fps_avg, tick, (-(logic_delay / 100.0f) + 10.0f) / 10.0f);
 
 		SDL_RenderPresent(renderer);

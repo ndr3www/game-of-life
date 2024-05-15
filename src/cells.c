@@ -55,7 +55,9 @@ void CellsGrid_delete(CellsGrid* cells_grid) {
 void CellsGrid_draw(SDL_Renderer* renderer, SDL_Rect* viewport, CellsGrid* cells_grid) {
 	for (size_t x = 0; x < cells_grid->width; ++x) {
 		for (size_t y = 0; y < cells_grid->height; ++y) {
-			SDL_RenderSetViewport(renderer, viewport);
+			if (SDL_RenderSetViewport(renderer, viewport) != 0) {
+				fprintf(stderr, "Failed to set viewport for cells grid: %s\n", SDL_GetError());
+			}
 			int return_code = boxColor(renderer,
 									   cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
 									   cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
