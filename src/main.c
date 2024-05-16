@@ -193,6 +193,7 @@ int main() {
 			++frame_count;
 		}
 
+		// Draw GUI
 		if (SDL_RenderSetViewport(renderer, NULL) != 0) {
 			fprintf(stderr, "Failed to set viewport for GUI: %s\n", SDL_GetError());
 		}
