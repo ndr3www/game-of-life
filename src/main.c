@@ -8,8 +8,9 @@ static const Uint32 FONT_SIZE = 24;
 static const Uint32 GUI_GAP = FONT_SIZE * 3;
 
 static const Sint16 CELL_SIZE = 8;
-static const unsigned int CELL_NUMBER_WIDTH = 128;
-static const unsigned int CELL_NUMBER_HEIGHT = 100;
+static const Sint16 CELL_SIZE_MESH = CELL_SIZE - 2;
+static const unsigned int CELL_NUMBER_WIDTH = 1024 / CELL_SIZE;
+static const unsigned int CELL_NUMBER_HEIGHT = 800 / CELL_SIZE;
 
 static const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
 static const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT;
@@ -112,6 +113,9 @@ int main() {
 							}
 							tick = 0;
 							break;
+						case SDLK_e:  // switch between edit and move modes
+							cells_grid->cell_size = (signed)cells_grid->cell_size < CELL_SIZE ? CELL_SIZE : CELL_SIZE_MESH;
+							break;
 					}
 				}
 
@@ -176,6 +180,10 @@ int main() {
 		}
 
 		clear_screen(renderer, BLACK_HEX);
+
+		// Set viewport color to gray
+		SDL_SetRenderDrawColor(renderer, 127, 127, 127, 255);
+		SDL_RenderFillRect(renderer, &viewport);
 
 		CellsGrid_draw(renderer, &viewport, cells_grid);
 
