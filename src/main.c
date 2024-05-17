@@ -85,51 +85,69 @@ int main() {
 		Uint32 frame_time = SDL_framerateDelay(&fpsManager);
 
 		while(SDL_PollEvent(&e) != 0) {
-			if (e.type == SDL_QUIT) {
-				quit = 1;
-			}
-			else if (e.type == SDL_KEYDOWN) {
-				if (e.key.repeat == 0) {
+			switch (e.type) {
+				case SDL_QUIT:
+					quit = 1;
+					break;
+				case SDL_KEYDOWN:
+					if (e.key.repeat == 0) {
+						switch (e.key.keysym.sym) {
+							case SDLK_ESCAPE:
+								quit = 1;
+								break;
+							case SDLK_p:
+								pause = !pause;
+								break;
+							case SDLK_r:
+								for (size_t x = 0; x < cells_grid->width; ++x) {
+									for (size_t y = 0; y < cells_grid->height; ++y) {
+										cells_grid->cell[x][y].is_alive = rand() % 2;
+									}
+								}
+								tick = 0;
+								break;
+							case SDLK_c:
+								for (size_t x = 0; x < cells_grid->width; ++x) {
+									for (size_t y = 0; y < cells_grid->height; ++y) {
+										cells_grid->cell[x][y].is_alive = 0;
+									}
+								}
+								tick = 0;
+								break;
+							case SDLK_e:  // switch between edit and move modes
+								cells_grid->cell_size = (signed)cells_grid->cell_size < CELL_SIZE ? CELL_SIZE : CELL_SIZE_MESH;
+								break;
+						}
+					}
+
 					switch (e.key.keysym.sym) {
-						case SDLK_ESCAPE:
-							quit = 1;
+						case SDLK_RIGHT:
+							logic_delay -= logic_delay > 0u ? 10u : 0u;
 							break;
-						case SDLK_p:
-							pause = !pause;
-							break;
-						case SDLK_r:
-							for (size_t x = 0; x < cells_grid->width; ++x) {
-								for (size_t y = 0; y < cells_grid->height; ++y) {
-									cells_grid->cell[x][y].is_alive = rand() % 2;
-								}
-							}
-							tick = 0;
-							break;
-						case SDLK_c:
-							for (size_t x = 0; x < cells_grid->width; ++x) {
-								for (size_t y = 0; y < cells_grid->height; ++y) {
-									cells_grid->cell[x][y].is_alive = 0;
-								}
-							}
-							tick = 0;
-							break;
-						case SDLK_e:  // switch between edit and move modes
-							cells_grid->cell_size = (signed)cells_grid->cell_size < CELL_SIZE ? CELL_SIZE : CELL_SIZE_MESH;
+						case SDLK_LEFT:
+							logic_delay += logic_delay < 990u ? 10u : 0;
 							break;
 					}
-				}
 
-				switch (e.key.keysym.sym) {
-					case SDLK_RIGHT:
-						logic_delay -= logic_delay > 0u ? 10u : 0u;
-						break;
-					case SDLK_LEFT:
-						logic_delay += logic_delay < 990u ? 10u : 0;
-						break;
-				}
+					break;
 			}
 
-			mouse_controls(cells_grid, &viewport);
+			// Change hovered cell state (left button - alive, others - dead)
+			int mouse_x, mouse_y;
+			Uint32 mouse_button = SDL_GetMouseState(&mouse_x, &mouse_y);
+			mouse_x -= viewport.x;
+			mouse_y -= viewport.y;
+
+			if (mouse_button > 0) {
+				for (size_t x = 0; x < cells_grid->width; ++x) {
+					for (size_t y = 0; y < cells_grid->height; ++y) {
+						if (mouse_x >= cells_grid->cell[x][y].pos_x && (unsigned)mouse_x <= cells_grid->cell[x][y].pos_x + cells_grid->cell_size &&
+							mouse_y >= cells_grid->cell[x][y].pos_y && (unsigned)mouse_y <= cells_grid->cell[x][y].pos_y + cells_grid->cell_size) {
+							cells_grid->cell[x][y].is_alive = mouse_button == 1 ? 1 : 0;
+						}
+					}
+				}
+			}
 		}
 
 		// Logic

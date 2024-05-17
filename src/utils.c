@@ -54,25 +54,6 @@ void close_SDL(SDL_Window* window, SDL_Renderer* renderer) {
 	SDL_Quit();
 }
 
-void mouse_controls(CellsGrid* cells_grid, SDL_Rect* viewport) {
-	int mouse_x, mouse_y;
-	Uint32 mouse_button = SDL_GetMouseState(&mouse_x, &mouse_y);
-	mouse_x -= viewport->x;
-	mouse_y -= viewport->y;
-
-	// Change hovered cell state (left button - alive, others - dead)
-	if (mouse_button > 0) {
-		for (size_t x = 0; x < cells_grid->width; ++x) {
-			for (size_t y = 0; y < cells_grid->height; ++y) {
-				if (mouse_x >= cells_grid->cell[x][y].pos_x && (unsigned)mouse_x <= cells_grid->cell[x][y].pos_x + cells_grid->cell_size &&
-					mouse_y >= cells_grid->cell[x][y].pos_y && (unsigned)mouse_y <= cells_grid->cell[x][y].pos_y + cells_grid->cell_size) {
-					cells_grid->cell[x][y].is_alive = mouse_button == 1 ? 1 : 0;
-				}
-			}
-		}
-	}
-}
-
 void clear_screen(SDL_Renderer* renderer, Uint32 color) {
 	Uint8* c = (Uint8*)&color;
 	if (SDL_SetRenderDrawColor(renderer, c[0], c[1], c[2], c[3]) != 0) {

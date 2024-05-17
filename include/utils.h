@@ -2,8 +2,6 @@
 
 #include <SDL2/SDL2_framerate.h>
 
-#include "cells.h"
-
 #define WHITE_HEX 0xffffffff
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -26,7 +24,5 @@ enum Directions {
 
 int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager, int screen_width, int screen_height);
 void close_SDL(SDL_Window* window, SDL_Renderer* renderer);
-
-void mouse_controls(CellsGrid* cells_grid, SDL_Rect* viewport);
 
 void clear_screen(SDL_Renderer* renderer, Uint32 color);
