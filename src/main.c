@@ -114,7 +114,7 @@ int main() {
 								}
 								tick = 0;
 								break;
-							case SDLK_e:  // switch between edit and move modes
+							case SDLK_e:  // turn the mesh on/off
 								cells_grid->cell_size = (signed)cells_grid->cell_size < CELL_SIZE ? CELL_SIZE : CELL_SIZE_MESH;
 								break;
 						}
