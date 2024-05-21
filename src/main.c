@@ -4,6 +4,8 @@
 #include "../include/utils.h"
 #include "../include/cells.h"
 
+#define SDL_MAIN_HANDLED
+
 static const Uint32 FONT_SIZE = 24;
 static const Uint32 GUI_GAP = FONT_SIZE * 3;
 
@@ -15,7 +17,7 @@ static const unsigned int CELL_NUMBER_HEIGHT = 800 / CELL_SIZE;
 static const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
 static const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT;
 
-int main() {
+int main(int argc, char* argv[]) {
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
 	FPSmanager fpsManager;
