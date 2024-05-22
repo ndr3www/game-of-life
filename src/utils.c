@@ -55,7 +55,7 @@ int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manag
 	}
 
 	// Create renderer
-	*renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	*renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_PRESENTVSYNC);
 	if (*renderer == NULL) {
 		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Failed to create renderer: %s\n", SDL_GetError());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to create renderer", SDL_GetError(), *window);
