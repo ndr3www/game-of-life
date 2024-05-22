@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL2_framerate.h>
+#include "SDL2_framerate.h"
 
 #define WHITE_HEX 0xffffffff
 

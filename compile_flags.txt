@@ -1,2 +1,4 @@
 -Wall
 -Wextra
+-I
+/usr/include/SDL2

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL2_gfxPrimitives.h>
+#include "SDL2_gfxPrimitives.h"
 
 typedef struct CellStruct {
 	Sint16 pos_x, pos_y;
