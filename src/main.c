@@ -30,14 +30,22 @@ int main(int argc, char* argv[]) {
 	FC_Font* font = FC_CreateFont();
 	const char* font_path = "fonts/Minecraft-Regular.otf";
 	if (!FC_LoadFont(font, renderer, font_path, FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL)) {
-		fprintf(stderr, "Failed to load font %s\n", font_path);
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load font '%s'\n", font_path);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to load font", font_path, window);
+
+		FC_FreeFont(font);
+		close_SDL(window, renderer);
 		return 2;
 	}
 	
 	// Initialize RNG
 	time_t unix_time = time(NULL);
 	if (unix_time == (time_t)(-1)) {
-		fprintf(stderr, "Failed to retrieve current Unix timestamp\n");
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to retrieve current Unix timestamp\n");
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "RNG initialization error", "Failed to retrieve current Unix timestamp", window);
+
+		FC_FreeFont(font);
+		close_SDL(window, renderer);
 		return 3;
 	}
 	srand(unix_time);
@@ -65,7 +73,10 @@ int main(int argc, char* argv[]) {
 	// Cells creation
 	CellsGrid* cells_grid = CellsGrid_create(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);
 	if (cells_grid == NULL) {
-		fprintf(stderr, "Failed to create cells\n");
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Cells initialization error", "Failed to create cells", window);
+
+		FC_FreeFont(font);
+		close_SDL(window, renderer);
 		return 4;
 	}
 
@@ -223,7 +234,7 @@ int main(int argc, char* argv[]) {
 
 		// Draw GUI
 		if (SDL_RenderSetViewport(renderer, NULL) != 0) {
-			fprintf(stderr, "Failed to set viewport for GUI: %s\n", SDL_GetError());
+			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to set viewport for GUI: %s\n", SDL_GetError());
 		}
 		FC_Draw(font, renderer, 0, 0, "FPS: %d\nTick: %lu\nSpeed: x%.2f\n", fps_avg, tick, (-(logic_delay / 100.0f) + 10.0f) / 10.0f);
 
