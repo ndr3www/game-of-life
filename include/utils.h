@@ -10,6 +10,8 @@
 	#define BLACK_HEX 0xff000000
 #endif
 
+extern float g_scale;
+
 typedef struct Pair_Sint16_Struct {
 	Sint16 y, x;
 } Pair_Sint16;

@@ -148,6 +148,8 @@ int main(int argc, char* argv[]) {
 			// Change hovered cell state (left button - alive, others - dead)
 			int mouse_x, mouse_y;
 			Uint32 mouse_button = SDL_GetMouseState(&mouse_x, &mouse_y);
+			mouse_x /= g_scale;
+			mouse_y /= g_scale;
 			mouse_x -= viewport.x;
 			mouse_y -= viewport.y;
 

@@ -1,5 +1,7 @@
 #include "../include/utils.h"
 
+float g_scale;
+
 int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager, int screen_width, int screen_height) {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -10,7 +12,7 @@ int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manag
 	}
 
 	// Create window
-	*window = SDL_CreateWindow("Game of life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_SHOWN);
+	*window = SDL_CreateWindow("Game of life", 0, 0, 0, 0, SDL_WINDOW_SHOWN);
 	if (*window == NULL) {
 		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Failed to create window: %s\n", SDL_GetError());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to create window", SDL_GetError(), NULL);
@@ -60,6 +62,24 @@ int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manag
 		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Failed to create renderer: %s\n", SDL_GetError());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to create renderer", SDL_GetError(), *window);
 
+		SDL_DestroyWindow(*window);
+		SDL_Quit();
+		return -1;
+	}
+
+	// Set global scaling factor
+	g_scale = displayMode.w / 1920.0f;
+
+	// Set appropriate window size and position
+	SDL_SetWindowSize(*window, screen_width * g_scale, screen_height * g_scale);
+	SDL_SetWindowPosition(*window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+	// Set device independent resolution for rendering
+	if (SDL_RenderSetLogicalSize(*renderer, screen_width, screen_height) != 0) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to set device independent resolution for rendering: %s\n", SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to set device independent resolution for rendering", SDL_GetError(), *window);
+
+		SDL_DestroyRenderer(*renderer);
 		SDL_DestroyWindow(*window);
 		SDL_Quit();
 		return -1;
