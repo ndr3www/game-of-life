@@ -2,6 +2,9 @@
 
 float g_scale;
 
+static const unsigned int ORIGIN_RES_WIDTH = 1920;
+static const unsigned int ORIGIN_RES_HEIGHT = 1080;
+
 int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager, int window_width, int window_height) {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -68,7 +71,7 @@ int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manag
 	}
 
 	// Set global scaling factor
-	g_scale = displayMode.w / 1920.0f;
+	g_scale = displayMode.w == (signed)ORIGIN_RES_WIDTH ? displayMode.w / (float)ORIGIN_RES_WIDTH : displayMode.h / (float)ORIGIN_RES_HEIGHT;
 
 	// Set appropriate window size and position
 	SDL_SetWindowSize(*window, window_width * g_scale, window_height * g_scale);
