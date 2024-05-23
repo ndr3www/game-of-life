@@ -14,15 +14,15 @@ static const Sint16 CELL_SIZE_MESH = CELL_SIZE - 2;
 static const unsigned int CELL_NUMBER_WIDTH = 128;
 static const unsigned int CELL_NUMBER_HEIGHT = 100;
 
-static const int SCREEN_WIDTH = CELL_NUMBER_WIDTH * CELL_SIZE;
-static const int SCREEN_HEIGHT = CELL_NUMBER_HEIGHT * CELL_SIZE;
+static const int WINDOW_WIDTH = CELL_NUMBER_WIDTH * CELL_SIZE;
+static const int WINDOW_HEIGHT = CELL_NUMBER_HEIGHT * CELL_SIZE;
 
 int main(int argc, char* argv[]) {
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
 	FPSmanager fpsManager;
 
-	if (init_SDL(&window, &renderer, &fpsManager, SCREEN_WIDTH, SCREEN_HEIGHT) != 0) {
+	if (init_SDL(&window, &renderer, &fpsManager, WINDOW_WIDTH, WINDOW_HEIGHT) != 0) {
 		return 1;
 	}
 
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 
 	size_t tick = 0;
 
-	SDL_Rect viewport = {0, GUI_GAP, SCREEN_WIDTH, SCREEN_HEIGHT - GUI_GAP};
+	SDL_Rect viewport = {0, GUI_GAP, WINDOW_WIDTH, WINDOW_HEIGHT - GUI_GAP};
 
 	// Cells creation
 	CellsGrid* cells_grid = CellsGrid_create(CELL_NUMBER_WIDTH, CELL_NUMBER_HEIGHT, CELL_SIZE);

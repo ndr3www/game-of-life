@@ -2,7 +2,7 @@
 
 float g_scale;
 
-int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager, int screen_width, int screen_height) {
+int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager, int window_width, int window_height) {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL: %s\n", SDL_GetError());
@@ -71,11 +71,11 @@ int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manag
 	g_scale = displayMode.w / 1920.0f;
 
 	// Set appropriate window size and position
-	SDL_SetWindowSize(*window, screen_width * g_scale, screen_height * g_scale);
+	SDL_SetWindowSize(*window, window_width * g_scale, window_height * g_scale);
 	SDL_SetWindowPosition(*window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 	// Set device independent resolution for rendering
-	if (SDL_RenderSetLogicalSize(*renderer, screen_width, screen_height) != 0) {
+	if (SDL_RenderSetLogicalSize(*renderer, window_width, window_height) != 0) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to set device independent resolution for rendering: %s\n", SDL_GetError());
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to set device independent resolution for rendering", SDL_GetError(), *window);
 

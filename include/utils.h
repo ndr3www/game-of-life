@@ -24,7 +24,7 @@ enum Directions {
 	NA = 0
 };
 
-int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager, int screen_width, int screen_height);
+int init_SDL(SDL_Window** window, SDL_Renderer** renderer, FPSmanager* fps_manager, int window_width, int window_height);
 void close_SDL(SDL_Window* window, SDL_Renderer* renderer);
 
 void clear_screen(SDL_Renderer* renderer, Uint32 color);
