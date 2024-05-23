@@ -11,11 +11,11 @@ static const Uint32 GUI_GAP = FONT_SIZE * 3;
 
 static const Sint16 CELL_SIZE = 8;
 static const Sint16 CELL_SIZE_MESH = CELL_SIZE - 2;
-static const unsigned int CELL_NUMBER_WIDTH = 1024 / CELL_SIZE;
-static const unsigned int CELL_NUMBER_HEIGHT = 800 / CELL_SIZE;
+static const unsigned int CELL_NUMBER_WIDTH = 128;
+static const unsigned int CELL_NUMBER_HEIGHT = 100;
 
-static const int SCREEN_WIDTH = CELL_SIZE * CELL_NUMBER_WIDTH;
-static const int SCREEN_HEIGHT = CELL_SIZE * CELL_NUMBER_HEIGHT;
+static const int SCREEN_WIDTH = CELL_NUMBER_WIDTH * CELL_SIZE;
+static const int SCREEN_HEIGHT = CELL_NUMBER_HEIGHT * CELL_SIZE;
 
 int main(int argc, char* argv[]) {
 	SDL_Window* window = NULL;
