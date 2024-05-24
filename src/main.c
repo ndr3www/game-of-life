@@ -213,7 +213,7 @@ int main(int argc, char* argv[]) {
 
 		clear_screen(renderer, BLACK_HEX);
 
-		CellsGrid_draw(renderer, &viewport, cells_grid, draw_mesh);
+		CellsGrid_draw(cells_grid, renderer, &viewport, draw_mesh);
 
 		// Calculate FPS every second
 		fps_current_time = SDL_GetTicks64();

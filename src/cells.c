@@ -52,7 +52,7 @@ void CellsGrid_delete(CellsGrid* cells_grid) {
 	free(cells_grid);
 }
 
-void CellsGrid_draw(SDL_Renderer* renderer, SDL_Rect* viewport, CellsGrid* cells_grid, int draw_mesh) {
+void CellsGrid_draw(CellsGrid* cells_grid, SDL_Renderer* renderer, SDL_Rect* viewport, int draw_mesh) {
 	for (size_t x = 0; x < cells_grid->width; ++x) {
 		for (size_t y = 0; y < cells_grid->height; ++y) {
 			if (SDL_RenderSetViewport(renderer, viewport) != 0) {
