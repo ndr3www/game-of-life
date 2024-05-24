@@ -66,9 +66,13 @@ void CellsGrid_draw(CellsGrid* cells_grid, SDL_Renderer* renderer, SDL_Rect* vie
 			if (return_code != 0) {
 				SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to render cell[%llu][%llu]\n", x, y);
 			}
+		}
+	}
 
-			if (draw_mesh) {
-				return_code = rectangleColor(renderer,
+	if (draw_mesh) {
+		for (size_t x = 0; x < cells_grid->width; ++x) {
+			for (size_t y = 0; y < cells_grid->height; ++y) {
+				int return_code = rectangleColor(renderer,
 											cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
 											cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
 											GRAY_HEX);
