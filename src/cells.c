@@ -35,6 +35,11 @@ CellsGrid* CellsGrid_create(size_t width, size_t height, unsigned int cell_size)
 			cell[x][y].pos_y = y * cell_size;
 			cell[x][y].is_alive = rand() % 2;
 			cell[x][y].alive_neighbours = 0;
+		
+			Uint8 color = cell[x][y].is_alive ? 255 : 0;
+			cell[x][y].r = color;
+			cell[x][y].g = color;
+			cell[x][y].b = color;
 		}
 	}
 
@@ -59,10 +64,10 @@ void CellsGrid_draw(CellsGrid* cells_grid, SDL_Renderer* renderer, SDL_Rect* vie
 				SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to set viewport for cells grid: %s\n", SDL_GetError());
 			}
 
-			int return_code = boxColor(renderer,
+			int return_code = boxRGBA(renderer,
 									   cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
 									   cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
-									   cells_grid->cell[x][y].is_alive ? WHITE_HEX : BLACK_HEX);
+									   cells_grid->cell[x][y].r, cells_grid->cell[x][y].g, cells_grid->cell[x][y].b, 255);
 			if (return_code != 0) {
 				SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to render cell[%llu][%llu]\n", x, y);
 			}

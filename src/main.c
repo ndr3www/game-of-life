@@ -16,6 +16,8 @@ static const unsigned int CELL_NUMBER_HEIGHT = 100;
 static const int WINDOW_WIDTH = CELL_NUMBER_WIDTH * CELL_SIZE;
 static const int WINDOW_HEIGHT = CELL_NUMBER_HEIGHT * CELL_SIZE;
 
+static const float COLOR_ANIM_FACTOR = 14.0f;
+
 int main(int argc, char* argv[]) {
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
@@ -114,6 +116,11 @@ int main(int argc, char* argv[]) {
 								for (size_t x = 0; x < cells_grid->width; ++x) {
 									for (size_t y = 0; y < cells_grid->height; ++y) {
 										cells_grid->cell[x][y].is_alive = rand() % 2;
+										
+										Uint8 color = cells_grid->cell[x][y].is_alive ? 255 : 0;
+										cells_grid->cell[x][y].r = color;
+										cells_grid->cell[x][y].g = color;
+										cells_grid->cell[x][y].b = color;
 									}
 								}
 								tick = 0;
@@ -122,6 +129,10 @@ int main(int argc, char* argv[]) {
 								for (size_t x = 0; x < cells_grid->width; ++x) {
 									for (size_t y = 0; y < cells_grid->height; ++y) {
 										cells_grid->cell[x][y].is_alive = 0;
+											
+										cells_grid->cell[x][y].r = 0;
+										cells_grid->cell[x][y].g = 0;
+										cells_grid->cell[x][y].b = 0;
 									}
 								}
 								tick = 0;
@@ -158,6 +169,11 @@ int main(int argc, char* argv[]) {
 						if (mouse_x >= cells_grid->cell[x][y].pos_x && (unsigned)mouse_x <= cells_grid->cell[x][y].pos_x + cells_grid->cell_size &&
 							mouse_y >= cells_grid->cell[x][y].pos_y && (unsigned)mouse_y <= cells_grid->cell[x][y].pos_y + cells_grid->cell_size) {
 							cells_grid->cell[x][y].is_alive = mouse_button == 1 ? 1 : 0;
+
+							Uint8 color = cells_grid->cell[x][y].is_alive ? 255 : 0;
+							cells_grid->cell[x][y].r = color;
+							cells_grid->cell[x][y].g = color;
+							cells_grid->cell[x][y].b = color;
 						}
 					}
 				}
@@ -197,12 +213,38 @@ int main(int argc, char* argv[]) {
 			// Check rules
 			for (size_t x = 0; x < cells_grid->width; ++x) {
 				for (size_t y = 0; y < cells_grid->height; ++y) {
+					if (cells_grid->cell[x][y].is_alive && (cells_grid->cell[x][y].alive_neighbours < 2 || cells_grid->cell[x][y].alive_neighbours > 3)) {
+						cells_grid->cell[x][y].is_alive = 0;
+						
+						cells_grid->cell[x][y].r = 255;
+						cells_grid->cell[x][y].g = 255;
+						cells_grid->cell[x][y].b = 255;
+					}
+					else if (!cells_grid->cell[x][y].is_alive && cells_grid->cell[x][y].alive_neighbours == 3) {
+						cells_grid->cell[x][y].is_alive = 1;
+						
+						cells_grid->cell[x][y].r = 255;
+						cells_grid->cell[x][y].g = 255;
+						cells_grid->cell[x][y].b = 255;
+					}
+
+
+					// Change color accordingly
+					float dr, dg, db;
 					if (cells_grid->cell[x][y].is_alive) {
-						cells_grid->cell[x][y].is_alive = !(cells_grid->cell[x][y].alive_neighbours < 2 || cells_grid->cell[x][y].alive_neighbours > 3);
+						dr = cells_grid->cell[x][y].r > COLOR_ANIM_FACTOR / 8 ? COLOR_ANIM_FACTOR / 8 : 0.0f;
+						dg = cells_grid->cell[x][y].g > COLOR_ANIM_FACTOR / 16 ? COLOR_ANIM_FACTOR / 16 : 0.0f;
+						db = cells_grid->cell[x][y].b > 150 + COLOR_ANIM_FACTOR / 32 ? COLOR_ANIM_FACTOR / 32 : 0.0f;
 					}
 					else {
-						cells_grid->cell[x][y].is_alive = (cells_grid->cell[x][y].alive_neighbours == 3);
+						dr = cells_grid->cell[x][y].r > COLOR_ANIM_FACTOR / 4 ? COLOR_ANIM_FACTOR / 4 : 0.0f;
+						dg = cells_grid->cell[x][y].g > COLOR_ANIM_FACTOR / 2 ? COLOR_ANIM_FACTOR / 2 : 0.0f;
+						db = cells_grid->cell[x][y].b > COLOR_ANIM_FACTOR ? COLOR_ANIM_FACTOR : 0.0f;
 					}
+
+					cells_grid->cell[x][y].r -= dr;
+					cells_grid->cell[x][y].g -= dg;
+					cells_grid->cell[x][y].b -= db;
 				}
 			}
 

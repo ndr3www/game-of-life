@@ -2,8 +2,6 @@
 
 #include "SDL2_framerate.h"
 
-#define WHITE_HEX 0xffffffff
-
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	#define BLACK_HEX 0x000000ff
 	#define GRAY_HEX  0x777777ff

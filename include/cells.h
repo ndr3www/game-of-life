@@ -6,6 +6,7 @@ typedef struct CellStruct {
 	Sint16 pos_x, pos_y;
 	int is_alive;
 	unsigned int alive_neighbours;
+	Uint8 r, g, b;
 } Cell;
 
 typedef struct CellsGridStruct {
