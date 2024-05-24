@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
 							case SDLK_p:
 								pause = !pause;
 								break;
-							case SDLK_r:
+							case SDLK_r:  // restarts the entire simulation
 								for (size_t x = 0; x < cells_grid->width; ++x) {
 									for (size_t y = 0; y < cells_grid->height; ++y) {
 										cells_grid->cell[x][y].is_alive = rand() % 2;
@@ -118,7 +118,7 @@ int main(int argc, char* argv[]) {
 								}
 								tick = 0;
 								break;
-							case SDLK_c:
+							case SDLK_c:  // "clears" the cells grid - makes every cell dead
 								for (size_t x = 0; x < cells_grid->width; ++x) {
 									for (size_t y = 0; y < cells_grid->height; ++y) {
 										cells_grid->cell[x][y].is_alive = 0;
@@ -126,17 +126,17 @@ int main(int argc, char* argv[]) {
 								}
 								tick = 0;
 								break;
-							case SDLK_e:  // turn the mesh on/off
+							case SDLK_e:
 								draw_mesh = !draw_mesh;
 								break;
 						}
 					}
 
 					switch (e.key.keysym.sym) {
-						case SDLK_RIGHT:
+						case SDLK_RIGHT: // speeds up logic calculations
 							logic_delay -= logic_delay > 0u ? 10u : 0u;
 							break;
-						case SDLK_LEFT:
+						case SDLK_LEFT:  // slows down logic calculations
 							logic_delay += logic_delay < 990u ? 10u : 0;
 							break;
 					}
