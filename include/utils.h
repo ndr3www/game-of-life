@@ -6,8 +6,10 @@
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	#define BLACK_HEX 0x000000ff
+	#define GRAY_HEX  0x777777ff
 #else
 	#define BLACK_HEX 0xff000000
+	#define GRAY_HEX  0xff777777
 #endif
 
 extern float g_scale;

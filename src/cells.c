@@ -52,18 +52,29 @@ void CellsGrid_delete(CellsGrid* cells_grid) {
 	free(cells_grid);
 }
 
-void CellsGrid_draw(SDL_Renderer* renderer, SDL_Rect* viewport, CellsGrid* cells_grid) {
+void CellsGrid_draw(SDL_Renderer* renderer, SDL_Rect* viewport, CellsGrid* cells_grid, int draw_mesh) {
 	for (size_t x = 0; x < cells_grid->width; ++x) {
 		for (size_t y = 0; y < cells_grid->height; ++y) {
 			if (SDL_RenderSetViewport(renderer, viewport) != 0) {
 				SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to set viewport for cells grid: %s\n", SDL_GetError());
 			}
+
 			int return_code = boxColor(renderer,
 									   cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
 									   cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
 									   cells_grid->cell[x][y].is_alive ? WHITE_HEX : BLACK_HEX);
 			if (return_code != 0) {
 				SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to render cell[%llu][%llu]\n", x, y);
+			}
+
+			if (draw_mesh) {
+				return_code = rectangleColor(renderer,
+											cells_grid->cell[x][y].pos_x, cells_grid->cell[x][y].pos_y,
+											cells_grid->cell[x][y].pos_x + cells_grid->cell_size, cells_grid->cell[x][y].pos_y + cells_grid->cell_size,
+											GRAY_HEX);
+				if (return_code != 0) {
+					SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Failed to render mesh for cell[%llu][%llu]\n", x, y);
+				}
 			}
 		}
 	}

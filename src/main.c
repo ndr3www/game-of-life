@@ -10,7 +10,6 @@ static const Uint32 FONT_SIZE = 24;
 static const Uint32 GUI_GAP = FONT_SIZE * 3;
 
 static const Sint16 CELL_SIZE = 8;
-static const Sint16 CELL_SIZE_MESH = CELL_SIZE - 2;
 static const unsigned int CELL_NUMBER_WIDTH = 128;
 static const unsigned int CELL_NUMBER_HEIGHT = 100;
 
@@ -51,7 +50,7 @@ int main(int argc, char* argv[]) {
 	srand(unix_time);
 
 	// Main loop flags
-	int quit = 0, pause = 1;
+	int quit = 0, pause = 1, draw_mesh = 0;
 
 	// Events handler
 	SDL_Event e;
@@ -128,7 +127,7 @@ int main(int argc, char* argv[]) {
 								tick = 0;
 								break;
 							case SDLK_e:  // turn the mesh on/off
-								cells_grid->cell_size = (signed)cells_grid->cell_size < CELL_SIZE ? CELL_SIZE : CELL_SIZE_MESH;
+								draw_mesh = !draw_mesh;
 								break;
 						}
 					}
@@ -214,11 +213,7 @@ int main(int argc, char* argv[]) {
 
 		clear_screen(renderer, BLACK_HEX);
 
-		// Set viewport color to gray
-		SDL_SetRenderDrawColor(renderer, 127, 127, 127, 255);
-		SDL_RenderFillRect(renderer, &viewport);
-
-		CellsGrid_draw(renderer, &viewport, cells_grid);
+		CellsGrid_draw(renderer, &viewport, cells_grid, draw_mesh);
 
 		// Calculate FPS every second
 		fps_current_time = SDL_GetTicks64();
