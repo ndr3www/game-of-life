@@ -4,8 +4,6 @@
 #include "../include/utils.h"
 #include "../include/cells.h"
 
-#define SDL_MAIN_HANDLED
-
 static const Uint32 FONT_SIZE = 24;
 static const Uint32 GUI_GAP = FONT_SIZE * 3;
 
