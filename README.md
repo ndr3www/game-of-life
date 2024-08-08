@@ -1,4 +1,5 @@
-![default](https://github.com/ndr3www/game-of-life/assets/164680506/e554f5ff-af9d-43b2-86fc-b9932d9717ac) ![mouse](https://github.com/ndr3www/game-of-life/assets/164680506/320ee84e-d620-4d95-80ed-ab6fe220378e)
+![default](https://github.com/ndr3www/game-of-life/assets/164680506/e554f5ff-af9d-43b2-86fc-b9932d9717ac) ![mouse](https://github.com/user-attachments/assets/6dc48ef0-d5cc-4330-8f48-56eea50a2027)
+
 
 # Installation
 
