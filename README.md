@@ -4,14 +4,20 @@
 # Installation
 
 ## Linux
-Download the Linux package from [latest release](https://github.com/ndr3www/game-of-life/releases/latest), unzip and install following dependencies through your distribution's package manager:
-- SDL2
-- SDL2_gfx
-- SDL2_ttf
+Download the Linux package from [latest release](https://github.com/ndr3www/game-of-life/releases/latest), unzip and install these dependencies through your distribution's package manager:
+`SDL2` `SDL2_gfx` `SDL2_ttf`
 
 ## Windows
 Just download the Windows package from [latest release](https://github.com/ndr3www/game-of-life/releases/latest), unzip and you're good to go!
+
 # Building from source
+
+First, you need to install following dependencies:
+
+`gcc` `SDL2` `SDL2_gfx` `SDL2_ttf`
+
+then just:
+
 ```bash
 git clone https://github.com/ndr3www/game-of-life
 cd game-of-life
