@@ -16,7 +16,7 @@ First, you need to install following dependencies:
 
 `gcc` `SDL2` `SDL2_gfx` `SDL2_ttf`
 
-then just:
+and then just:
 
 ```bash
 git clone https://github.com/ndr3www/game-of-life
@@ -24,7 +24,7 @@ cd game-of-life
 mkdir build
 cd build
 ```
-## Natively
+## Native build
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make
