@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 
 	// Font setup
 	FC_Font* font = FC_CreateFont();
-	const char* font_path = "fonts/Minecraft-Regular.otf";
+	const char* font_path = "res/fonts/Minecraft-Regular.otf";
 	if (!FC_LoadFont(font, renderer, font_path, FONT_SIZE, FC_MakeColor(255, 255, 255, 255), TTF_STYLE_NORMAL)) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load font '%s'\n", font_path);
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to load font", font_path, window);
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 	}
 	
   // Load mesh texture
-  const char* mesh_bmp_path = "textures/aux_grid.bmp";
+  const char* mesh_bmp_path = "res/textures/aux_grid.bmp";
   SDL_Surface* mesh_bmp = SDL_LoadBMP(mesh_bmp_path);
   if (mesh_bmp == NULL) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load texture '%s': %s\n", mesh_bmp_path, SDL_GetError());
