@@ -4,7 +4,7 @@
 #include "../include/utils.h"
 #include "../include/cells.h"
 
-static const Uint32 FONT_SIZE = 24;
+static const Uint32 FONT_SIZE = 26;
 static const Uint32 GUI_GAP = FONT_SIZE * 3;
 
 static const Sint16 CELL_SIZE = 8;
