@@ -37,6 +37,31 @@ int main(int argc, char* argv[]) {
 		return 2;
 	}
 	
+  // Load mesh texture
+  const char* mesh_bmp_path = "textures/aux_grid.bmp";
+  SDL_Surface* mesh_bmp = SDL_LoadBMP(mesh_bmp_path);
+  if (mesh_bmp == NULL) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load texture '%s': %s\n", mesh_bmp_path, SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to load texture", mesh_bmp_path, window);
+
+		FC_FreeFont(font);
+		close_SDL(window, renderer);
+		return 3;
+  }
+
+  // Mesh texture setup
+  SDL_Texture* mesh_texture = SDL_CreateTextureFromSurface(renderer, mesh_bmp);
+  SDL_FreeSurface(mesh_bmp);
+  if (mesh_texture == NULL) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to create mesh texture: %s\n", SDL_GetError());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Failed to create mesh texture", SDL_GetError(), window);
+
+		FC_FreeFont(font);
+		close_SDL(window, renderer);
+		return 4;
+  }
+  SDL_SetTextureScaleMode(mesh_texture, SDL_ScaleModeBest);
+
 	// Initialize RNG
 	time_t unix_time = time(NULL);
 	if (unix_time == (time_t)(-1)) {
@@ -44,8 +69,9 @@ int main(int argc, char* argv[]) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "RNG initialization error", "Failed to retrieve current Unix timestamp", window);
 
 		FC_FreeFont(font);
+    SDL_DestroyTexture(mesh_texture);
 		close_SDL(window, renderer);
-		return 3;
+		return 5;
 	}
 	srand(unix_time);
 
@@ -75,8 +101,9 @@ int main(int argc, char* argv[]) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Cells initialization error", "Failed to create cells", window);
 
 		FC_FreeFont(font);
+    SDL_DestroyTexture(mesh_texture); 
 		close_SDL(window, renderer);
-		return 4;
+		return 6;
 	}
 
 	// Define directions for counting alive neighbours
@@ -253,7 +280,7 @@ int main(int argc, char* argv[]) {
 
 		clear_screen(renderer, BLACK_HEX);
 
-		CellsGrid_draw(cells_grid, renderer, &viewport, draw_mesh);
+		CellsGrid_draw(cells_grid, renderer, &viewport, mesh_texture, draw_mesh);
 
 		// Calculate FPS every second
 		fps_current_time = SDL_GetTicks64();
@@ -281,6 +308,7 @@ int main(int argc, char* argv[]) {
 	// Clean up
 	CellsGrid_delete(cells_grid);
 	FC_FreeFont(font);
+  SDL_DestroyTexture(mesh_texture); 
 	close_SDL(window, renderer);
 
 	return 0;

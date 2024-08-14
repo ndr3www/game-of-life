@@ -22,4 +22,4 @@ CellsGrid* CellsGrid_create(size_t width, size_t height, unsigned int cell_size)
 void CellsGrid_delete(CellsGrid* cells_grid);
 
 // Drawing
-void CellsGrid_draw(CellsGrid* cells_grid, SDL_Renderer* renderer, SDL_Rect* viewport, int draw_mesh);
+void CellsGrid_draw(CellsGrid* cells_grid, SDL_Renderer* renderer, SDL_Rect* viewport, SDL_Texture* mesh_texture, int draw_mesh);
