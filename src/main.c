@@ -9,10 +9,10 @@ static const Uint32 GUI_GAP = FONT_SIZE * 3;
 
 static const Sint16 CELL_SIZE = 8;
 static const unsigned int CELL_NUMBER_WIDTH = 128;
-static const unsigned int CELL_NUMBER_HEIGHT = 100;
+static const unsigned int CELL_NUMBER_HEIGHT = 91;
 
 static const int WINDOW_WIDTH = CELL_NUMBER_WIDTH * CELL_SIZE;
-static const int WINDOW_HEIGHT = CELL_NUMBER_HEIGHT * CELL_SIZE;
+static const int WINDOW_HEIGHT = CELL_NUMBER_HEIGHT * CELL_SIZE + GUI_GAP;
 
 static const float COLOR_ANIM_FACTOR = 14.0f;
 
