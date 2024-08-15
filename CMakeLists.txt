@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD_REQUIRED true)
 set(CMAKE_C_FLAGS_DEBUG_INIT "-Wall -Wextra -fsanitize=address -fno-omit-frame-pointer")
 set(CMAKE_C_FLAGS_RELEASE_INIT "-Wall -Wextra")
 
-project(game-of-life VERSION 0.1 LANGUAGES C)
+project(game-of-life VERSION 0.1.1 LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
